@@ -15,13 +15,18 @@ import (
 var ErrMissingValue = errors.New("(MISSING)")
 
 type zapSugaredLogger struct {
-	preload []interface{}
 	*zap.SugaredLogger
+	preload []interface{}
 }
 
-func NewZapSugaredLogger(opt *Options) (*zapSugaredLogger, error) {
+func NewZapSugaredLogger(opt Options) (*zapSugaredLogger, error) {
 
-	var encoder = zap.NewProductionEncoderConfig()
+	var encoder zapcore.EncoderConfig
+	if opt.LogLevel == DEBUG {
+		encoder = zap.NewDevelopmentEncoderConfig()
+	} else {
+		encoder = zap.NewProductionEncoderConfig()
+	}
 
 	encoder.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 		enc.AppendString(t.Format(util.FORMAT_ISO8601_DATE_TIME_MILLI))
@@ -52,25 +57,23 @@ func NewZapSugaredLogger(opt *Options) (*zapSugaredLogger, error) {
 		return nil, err
 	}
 
-	var logLevel zapcore.Level
-
-	switch opt.LogLevel {
-	case INFO:
-		logLevel = zapcore.InfoLevel
-	case DEBUG:
-		logLevel = zapcore.DebugLevel
-	case WARN:
-		logLevel = zapcore.WarnLevel
-	case ERROR:
-		logLevel = zapcore.ErrorLevel
-	default:
-		logLevel = zapcore.ErrorLevel
-	}
+	// switch opt.LogLevel {
+	// case INFO:
+	// 	logLevel = zapcore.InfoLevel
+	// case DEBUG:
+	// 	logLevel = zapcore.DebugLevel
+	// case WARN:
+	// 	logLevel = zapcore.WarnLevel
+	// case ERROR:
+	// 	logLevel = zapcore.ErrorLevel
+	// default:
+	// 	logLevel = zapcore.ErrorLevel
+	// }
 
 	zcore := zapcore.NewCore(
 		zapcore.NewJSONEncoder(encoder), // 编码器配置
 		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(logWriter)), // 打印到控制台和文件
-		zap.NewAtomicLevelAt(logLevel), // 日志级别
+		zap.NewAtomicLevelAt(zapcore.Level(opt.LogLevel)),                                   // 日志级别
 	)
 
 	return &zapSugaredLogger{

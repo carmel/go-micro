@@ -1,9 +1,15 @@
+// 实现日志以文件形式保存，逻辑如下：
+// 当前日志文件经LogPath指定，当文件大小达到MaxSize或文件时间跨度达到MaxAge，将当前日志文件压缩存档（存档名称经gzName方法获得），之后将LogPath文件清空
+
+// 参考1: gopkg.in/natefinch/lumberjack.v2
+// 参考2: https://github.com/easyCZ/logrotate
 package log
 
 import (
-	"errors"
+	"bufio"
+	"compress/gzip"
 	"fmt"
-	"io/fs"
+	"io"
 	"os"
 	"path/filepath"
 	"sync"
@@ -12,164 +18,172 @@ import (
 	"github.com/microservices/util"
 )
 
-const (
-	archiveTimeFormat = "2006-01-02T15-04-05.000"
-)
-
-var (
-	// currentTime exists so it can be mocked out by tests.
-	currentTime = time.Now
-)
-
-func NewLogWriter(opt *Options) (*LogWriter, error) {
-	if opt.MaxSize <= 0 {
-		return nil, errors.New("max size cannot be 0")
-	}
-
-	if opt.LogPath == "" {
-		return nil, errors.New("log path cannot be empty")
-	}
-
-	r := &LogWriter{
-		Options: *opt,
-	}
-
-	// 第一次打开日志文件，有则追加（重启服务时可能日志文件已存在），无则创建
-	fl, err := os.OpenFile(r.LogPath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		// if we fail to open the old log file for some reason, just ignore
-		// it and open a new log file.
-		return nil, err
-	}
-
-	stat, _ := fl.Stat()
-	r.file = fl
-	r.size = stat.Size()
-
-	return r, nil
-}
-
 type LogWriter struct {
-	Options
-	size      int64
-	file      *os.File
-	mu        sync.Mutex
-	wg        sync.WaitGroup
-	startMill sync.Once
+	ts   time.Time
+	file *os.File
+	bw   *bufio.Writer
+	dir  string
+	opts Options
+	size int64
+	sync.Mutex
 }
 
-func (r *LogWriter) Write(p []byte) (n int, err error) {
+// NewLogWriter creates a new concurrency safe LogWriter which performs log rotation.
+func NewLogWriter(opts Options) (*LogWriter, error) {
+	dir := filepath.Dir(opts.LogPath)
+	_, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+			return nil, fmt.Errorf("directory %s does not exist and could not be created: %s", dir, err)
+		}
+	}
+
+	// 以创建、只写、追加模式打开日志文件
+	var f *os.File
+	if f, err = os.OpenFile(opts.LogPath, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644); err != nil {
+		return nil, fmt.Errorf("failed to open file %s: %s", opts.LogPath, err)
+	}
+
+	w := &LogWriter{
+		opts: opts,
+		file: f,
+		bw:   bufio.NewWriter(f),
+		dir:  dir,
+	}
+
+	// w.bw.WriteString("\n")
+
+	fi, _ := f.Stat()
+	w.size = fi.Size() // + 1
+
+	return w, nil
+}
+
+func (w *LogWriter) gzName() string {
+	// return fmt.Sprintf("%s/%s-%s-%s.gz", w.dir, w.fn, time.Now().UTC().Format("2006-01-02T15-04-05.000"), util.RandomStr(3))
+	return fmt.Sprintf("%s%c%s-%s.log.gz", w.dir, filepath.Separator, time.Now().UTC().Format(time.RFC3339), util.RandomStr(3))
+}
+
+// Write implements io.Writer.
+func (l *LogWriter) Write(p []byte) (n int, err error) {
+	l.Lock()
+	defer l.Unlock()
+
 	writeLen := int64(len(p))
-	if writeLen > r.MaxSize {
-		return 0, fmt.Errorf(
-			"write length %d, max size %d: write exceeds max file length", writeLen, r.MaxSize,
-		)
+	if l.opts.MaxSize != 0 {
+		if l.opts.MaxSize < writeLen {
+			return 0, fmt.Errorf(
+				"write length %d exceeds maximum file size %d", writeLen, l.opts.MaxSize,
+			)
+		}
+
+		if l.size+writeLen > l.opts.MaxSize {
+			// 压缩存档
+			err = l.archive()
+			if err != nil {
+				return 0, fmt.Errorf("failed to archive: %s", err)
+			}
+		}
 	}
 
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	// 当要写入的内容大小大于限定值，则进行历史归档
-	if r.MaxSize > 0 && r.size+writeLen >= r.MaxSize {
-		r.wg.Add(1)
-		r.startMill.Do(func() {
-			go r.archive()
-		})
-
-		r.wg.Wait()
-	} else {
-		n, err = r.file.Write(p)
-		r.size += int64(n)
+	if l.opts.MaxAge != 0 && time.Now().After(l.ts.Add(l.opts.MaxAge)) {
+		// 压缩存档
+		err = l.archive()
+		if err != nil {
+			return 0, fmt.Errorf("failed to archive: %s", err)
+		}
 	}
 
-	return n, err
-}
-
-// Close implements io.Closer, and closes the current logfile.
-func (r *LogWriter) Close() error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	return r.close()
-}
-
-// close closes the file if it is open.
-func (r *LogWriter) close() error {
-	if r.file == nil {
-		return nil
-	}
-	err := r.file.Close()
-	r.file = nil
-	return err
-}
-
-// archive 进行历史归档
-func (r *LogWriter) archive() {
-	defer r.wg.Done()
-	f, err := os.Open(r.LogPath)
+	_, err = l.bw.Write(p)
 	if err != nil {
-		return
+		return 0, fmt.Errorf("failed to write to the log file: %s", err)
+	}
+
+	err = l.bw.Flush()
+	if err != nil {
+		return 0, fmt.Errorf("failed to flush buffered writer: %s", err)
+	}
+
+	l.size += writeLen
+	// n, err = l.file.Write(p)
+	// l.size += int64(n)
+
+	return int(writeLen), nil
+}
+
+// Close implements io.Closer
+func (l *LogWriter) Close() error {
+	l.Lock()
+	defer l.Unlock()
+
+	err := l.bw.Flush()
+	if err != nil {
+		return fmt.Errorf("failed to flush buffered writer: %s", err)
+	}
+
+	// File.Sync() 底层调用的是 fsync 系统调用，这会将数据和元数据都刷到磁盘
+	// 如果只想刷数据到磁盘（比如，文件大小没变，只是变了文件数据），需要自己封装，调用 fdatasync（syscall.Fdatasync） 系统调用。
+	err = l.file.Sync()
+	if err != nil {
+		return fmt.Errorf("failed to sync current log file: %s", err)
+	}
+
+	err = l.file.Close()
+	if err != nil {
+		return fmt.Errorf("failed to close current log file: %s", err)
+	}
+
+	l.file = nil
+
+	return nil
+}
+
+func (l *LogWriter) archive() error {
+	// 对 LogPath 指向的日志文件进行压缩存档 ===>
+	gz := l.gzName()
+	nf, err := os.Create(gz)
+	if err != nil {
+		return fmt.Errorf("failed to create gzip file: %s", err)
+	}
+	defer nf.Close()
+
+	gzw := gzip.NewWriter(nf)
+	if err != nil {
+		return fmt.Errorf("failed to create gzip writer: %s", err)
+	}
+	defer gzw.Close()
+
+	var f *os.File
+	// 此处不能重用l.file，而要重新定义一个f，是因file是只写的
+	f, err = os.Open(l.opts.LogPath)
+	if err != nil {
+		return fmt.Errorf("failed to open log file in read-only mode: %s", err)
 	}
 	defer f.Close()
 
-	// move the existing file
-	filename := filepath.Base(r.LogPath)
-	dir := filepath.Dir(filename)
-	ext := filepath.Ext(filename)
-	filename = fmt.Sprintf("%s-%s%s", filename[:len(filename)-len(ext)], currentTime().Format(archiveTimeFormat), ext)
-	newname := filepath.Join(dir, filename)
-
-	defer func() {
-		// 如果报错则删除存档
-		if err != nil {
-			_ = os.Remove(newname)
-		}
-	}()
-	if r.Compress {
-		newname += util.COMPRESSED_EXT
-		err = util.FileGzip(f, newname)
-		if err != nil {
-			return
-		}
-	} else {
-		// 复制当前日志为存档文件
-		err = util.FileCopy(f, newname)
-		if err != nil {
-			return
-		}
-
-	}
-
-	if r.MaxAge > 0 {
-		var files []fs.DirEntry
-		files, err = os.ReadDir(filepath.Dir(r.LogPath))
-		if err != nil {
-			return
-		}
-		cutoff := currentTime().Add(-1 * r.MaxAge)
-		var fn string
-		// fi, _ := f.Stat()
-
-		var fi os.FileInfo
-		for _, f := range files {
-			fn = f.Name()
-			if f.IsDir() || fn == r.LogPath || fn == newname {
-				continue
-			}
-
-			fi, _ = f.Info()
-			if fi.ModTime().Before(cutoff) {
-				_ = os.Remove(fi.Name())
-			}
-		}
-	}
-
-	// 清空日志
-	err = os.Truncate(r.LogPath, 0)
+	_, err = io.Copy(gzw, f)
 	if err != nil {
-		return
+		return fmt.Errorf("failed to write gzip file: %s", err)
 	}
 
-	r.size = 0
+	// gzw.Flush()
 
+	// 清空原来日志
+	err = os.Truncate(l.opts.LogPath, 0)
+	if err != nil {
+		return fmt.Errorf("failed to truncate log file: %s", err)
+	}
+
+	// err = l.file.Truncate(0)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to truncate log file: %s", err)
+	// }
+	// _, err = l.file.Seek(0, 0)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to seek log file: %s", err)
+	// }
+	l.size = 0
+	l.ts = time.Now().UTC()
+
+	return nil
 }

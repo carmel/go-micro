@@ -522,8 +522,8 @@ func SortRange(m map[string]interface{}, f func(int, string)) {
 	}
 }
 
-// GetRandomString 获得随机字符串
-func GetRandomString(l int) string {
+// RandomStr 获得随机字符串
+func RandomStr(l int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
 	bytes := []byte(str)
 	result := []byte{}

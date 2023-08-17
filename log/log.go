@@ -7,27 +7,27 @@ import (
 	"time"
 )
 
-type level uint8
+type level int8
 
 const (
-	INFO level = iota
-	DEBUG
+	DEBUG level = iota - 1
+	INFO
 	WARN
 	ERROR
 )
 
 // Options represents optional behavior you can specify for a new LogWriter.
 type Options struct {
+	// 日志存放路径
+	LogPath string `yaml:"log-path"`
 	// 日志保存期限
 	MaxAge time.Duration `yaml:"max-age"`
 	// 单个日志文件大小，超过则rotate
 	MaxSize int64 `yaml:"max-size"`
 	// 日志是否压缩
-	Compress bool `yaml:"compress"`
+	// Compress bool `yaml:"compress"`
 	// 日志级别
 	LogLevel level `yaml:"log-level"`
-	// 日志存放路径
-	LogPath string `yaml:"log-path"`
 }
 
 type Logger interface {

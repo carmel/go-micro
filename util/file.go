@@ -27,9 +27,10 @@ func FileGzip(f *os.File, gzName string) error {
 	}
 	defer w.Close()
 
-	io.Copy(w, f)
-	return w.Flush()
-
+	_, err = io.Copy(w, f)
+	return err
+	// 进行Sync读写时才需要使用Flush
+	// return w.Flush()
 }
 
 func PathGzip(fpath, gzName string) error {

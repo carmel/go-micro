@@ -21,3 +21,7 @@ func TestCompress(t *testing.T) {
 
 	fmt.Println(os.FileMode(0644).String())
 }
+
+func TestPool2(t *testing.T) {
+
+}

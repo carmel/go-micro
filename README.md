@@ -1,4 +1,4 @@
-### 分布式微服务商城系统
+### 分布式微服务系统
 
 微服务架构要解决的问题：
 
@@ -16,3 +16,13 @@
    5. 性能监控 metrics
 8. API 网关 gateway
 9. 工具类 util
+
+
+### 结构体字段排列优化
+```sh
+go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
+# 查看哪些结构体有待优化空间
+fieldalignment ./...
+# --fix: 直接优化结构体（此时字段注释会被覆盖）
+fieldalignment --fix ./...
+```

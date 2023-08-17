@@ -173,10 +173,10 @@ func GetFile(filename, uri string) error {
 
 // MultipartFormField 文件或其他表单数据
 type MultipartFormField struct {
-	IsFile    bool
 	Fieldname string
-	Value     []byte
 	Filename  string
+	Value     []byte
+	IsFile    bool
 }
 
 // PostMultipartForm 上传文件或其他表单数据
