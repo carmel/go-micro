@@ -1,4 +1,4 @@
-package util
+package tool
 
 // The following constants represents different data format layout
 const (

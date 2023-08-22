@@ -6,7 +6,6 @@
 package log
 
 import (
-	"bufio"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -15,13 +14,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/microservices/util"
+	"github.com/microservices/tool"
 )
 
 type LogWriter struct {
 	ts   time.Time
 	file *os.File
-	bw   *bufio.Writer
 	dir  string
 	opts Options
 	size int64
@@ -47,8 +45,8 @@ func NewLogWriter(opts Options) (*LogWriter, error) {
 	w := &LogWriter{
 		opts: opts,
 		file: f,
-		bw:   bufio.NewWriter(f),
-		dir:  dir,
+		// bw:   bufio.NewWriter(f),
+		dir: dir,
 	}
 
 	// w.bw.WriteString("\n")
@@ -61,7 +59,7 @@ func NewLogWriter(opts Options) (*LogWriter, error) {
 
 func (w *LogWriter) gzName() string {
 	// return fmt.Sprintf("%s/%s-%s-%s.gz", w.dir, w.fn, time.Now().UTC().Format("2006-01-02T15-04-05.000"), util.RandomStr(3))
-	return fmt.Sprintf("%s%c%s-%s.log.gz", w.dir, filepath.Separator, time.Now().UTC().Format(time.RFC3339), util.RandomStr(3))
+	return fmt.Sprintf("%s%c%s-%s.log.gz", w.dir, filepath.Separator, time.Now().UTC().Format(time.RFC3339), tool.RandomStr(3))
 }
 
 // Write implements io.Writer.
@@ -72,16 +70,16 @@ func (l *LogWriter) Write(p []byte) (n int, err error) {
 	writeLen := int64(len(p))
 	if l.opts.MaxSize != 0 {
 		if l.opts.MaxSize < writeLen {
-			return 0, fmt.Errorf(
-				"write length %d exceeds maximum file size %d", writeLen, l.opts.MaxSize,
-			)
+			err = fmt.Errorf("write length %d exceeds maximum file size %d", writeLen, l.opts.MaxSize)
+			return
 		}
 
 		if l.size+writeLen > l.opts.MaxSize {
 			// 压缩存档
 			err = l.archive()
 			if err != nil {
-				return 0, fmt.Errorf("failed to archive: %s", err)
+				err = fmt.Errorf("failed to archive: %s", err)
+				return
 			}
 		}
 	}
@@ -90,25 +88,18 @@ func (l *LogWriter) Write(p []byte) (n int, err error) {
 		// 压缩存档
 		err = l.archive()
 		if err != nil {
-			return 0, fmt.Errorf("failed to archive: %s", err)
+			err = fmt.Errorf("failed to archive: %s", err)
+			return
 		}
 	}
 
-	_, err = l.bw.Write(p)
+	n, err = l.file.Write(p)
 	if err != nil {
-		return 0, fmt.Errorf("failed to write to the log file: %s", err)
+		err = fmt.Errorf("failed to write to the log file: %s", err)
+		return
 	}
-
-	err = l.bw.Flush()
-	if err != nil {
-		return 0, fmt.Errorf("failed to flush buffered writer: %s", err)
-	}
-
 	l.size += writeLen
-	// n, err = l.file.Write(p)
-	// l.size += int64(n)
-
-	return int(writeLen), nil
+	return
 }
 
 // Close implements io.Closer
@@ -116,19 +107,19 @@ func (l *LogWriter) Close() error {
 	l.Lock()
 	defer l.Unlock()
 
-	err := l.bw.Flush()
-	if err != nil {
-		return fmt.Errorf("failed to flush buffered writer: %s", err)
-	}
+	// err := l.bw.Flush()
+	// if err != nil {
+	// 	return fmt.Errorf("failed to flush buffered writer: %s", err)
+	// }
 
 	// File.Sync() 底层调用的是 fsync 系统调用，这会将数据和元数据都刷到磁盘
 	// 如果只想刷数据到磁盘（比如，文件大小没变，只是变了文件数据），需要自己封装，调用 fdatasync（syscall.Fdatasync） 系统调用。
-	err = l.file.Sync()
-	if err != nil {
-		return fmt.Errorf("failed to sync current log file: %s", err)
-	}
+	// err = l.file.Sync()
+	// if err != nil {
+	// 	return fmt.Errorf("failed to sync current log file: %s", err)
+	// }
 
-	err = l.file.Close()
+	err := l.file.Close()
 	if err != nil {
 		return fmt.Errorf("failed to close current log file: %s", err)
 	}

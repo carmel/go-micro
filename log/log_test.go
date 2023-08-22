@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/microservices/util"
+	"github.com/microservices/tool"
 )
 
 type mdware struct {
@@ -33,7 +33,7 @@ func BenchmarkZap(b *testing.B) {
 		logger,
 	}
 
-	wp := util.NewPool(10, &sync.WaitGroup{})
+	wp := tool.NewPool(10, &sync.WaitGroup{})
 
 	b.StartTimer()
 

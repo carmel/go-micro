@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/microservices/util"
+	"github.com/microservices/tool"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -29,7 +29,7 @@ func NewZapSugaredLogger(opt Options) (*zapSugaredLogger, error) {
 	}
 
 	encoder.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-		enc.AppendString(t.Format(util.FORMAT_ISO8601_DATE_TIME_MILLI))
+		enc.AppendString(t.Format(tool.FORMAT_ISO8601_DATE_TIME_MILLI))
 	}
 
 	// encoder.EncodeCaller = func(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
