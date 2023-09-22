@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 )
 
@@ -22,6 +23,25 @@ func TestCompress(t *testing.T) {
 	fmt.Println(os.FileMode(0644).String())
 }
 
-func TestPool2(t *testing.T) {
+func TestPool(t *testing.T) {
 
+	doSomething := func() {
+		fmt.Println("do something only once...")
+	}
+
+	once := &sync.Once{}
+	wg := &sync.WaitGroup{}
+
+	var routines int = 4
+	wg.Add(routines)
+
+	for i := 0; i < routines; i++ {
+		go func(i int) {
+			defer wg.Done()
+			fmt.Printf("goroutine %d...\n", i+1)
+			once.Do(doSomething)
+		}(i)
+	}
+
+	wg.Wait()
 }

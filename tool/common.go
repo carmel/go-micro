@@ -9,7 +9,6 @@ import (
 	"net"
 	"path/filepath"
 
-	// "io/ioutil"
 	"log"
 	"math/rand"
 	"mime/multipart"
