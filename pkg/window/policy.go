@@ -10,13 +10,12 @@ import (
 // e.g. If the last point is appended one bucket duration ago,
 // RollingPolicy will increment current offset.
 type RollingPolicy struct {
-	mu     sync.RWMutex
-	size   int
-	window *Window
-	offset int
-
-	bucketDuration time.Duration
 	lastAppendTime time.Time
+	window         *Window
+	size           int
+	offset         int
+	bucketDuration time.Duration
+	mu             sync.RWMutex
 }
 
 // RollingPolicyOpts contains the arguments for creating RollingPolicy.

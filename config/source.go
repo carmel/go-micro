@@ -3,8 +3,8 @@ package config
 // KV is config key value.
 type KV struct {
 	Key    string
-	Value  []byte
 	Format string
+	Value  []byte
 }
 
 // Source is config source.

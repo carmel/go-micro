@@ -56,8 +56,8 @@ func PrintDebugLog(p bool) Option {
 type builder struct {
 	discoverer registry.Discovery
 	timeout    time.Duration
-	insecure   bool
 	subsetSize int
+	insecure   bool
 	debugLog   bool
 }
 

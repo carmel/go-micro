@@ -22,9 +22,9 @@ func New() Matcher {
 }
 
 type matcher struct {
+	matchs   map[string][]midware.Midware
 	prefix   []string
 	defaults []midware.Midware
-	matchs   map[string][]midware.Midware
 }
 
 func (m *matcher) Use(ms ...midware.Midware) {

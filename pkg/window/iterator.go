@@ -4,9 +4,9 @@ import "fmt"
 
 // Iterator iterates the buckets within the window.
 type Iterator struct {
+	cur           *Bucket
 	count         int
 	iteratedCount int
-	cur           *Bucket
 }
 
 // Next returns true util all of the buckets has been iterated.

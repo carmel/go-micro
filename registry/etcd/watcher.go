@@ -12,15 +12,15 @@ import (
 var _ registry.Watcher = (*watcher)(nil)
 
 type watcher struct {
-	key         string
 	ctx         context.Context
+	watcher     clientv3.Watcher
+	kv          clientv3.KV
 	cancel      context.CancelFunc
 	client      *clientv3.Client
 	watchChan   clientv3.WatchChan
-	watcher     clientv3.Watcher
-	kv          clientv3.KV
-	first       bool
+	key         string
 	serviceName string
+	first       bool
 }
 
 func newWatcher(ctx context.Context, key, name string, client *clientv3.Client) (*watcher, error) {

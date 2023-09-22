@@ -40,20 +40,20 @@ type ClientOption func(*clientOptions)
 
 // Client is an HTTP transport client.
 type clientOptions struct {
+	discovery    registry.Discovery
 	ctx          context.Context
+	transport    http.RoundTripper
+	errorDecoder DecodeErrorFunc
 	tlsConf      *tls.Config
-	timeout      time.Duration
-	endpoint     string
-	userAgent    string
 	encoder      EncodeRequestFunc
 	decoder      DecodeResponseFunc
-	errorDecoder DecodeErrorFunc
-	transport    http.RoundTripper
+	endpoint     string
+	userAgent    string
 	nodeFilters  []selector.NodeFilter
-	discovery    registry.Discovery
 	midware      []midware.Midware
-	block        bool
+	timeout      time.Duration
 	subsetSize   int
+	block        bool
 }
 
 // WithSubset with client disocvery subset size.
@@ -150,12 +150,12 @@ func WithTLSConfig(c *tls.Config) ClientOption {
 
 // Client is an HTTP client.
 type Client struct {
-	opts     clientOptions
+	selector selector.Selector
 	target   *Target
 	r        *resolver
 	cc       *http.Client
+	opts     clientOptions
 	insecure bool
-	selector selector.Selector
 }
 
 // NewClient returns an HTTP client.

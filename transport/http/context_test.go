@@ -84,7 +84,7 @@ func TestContextResponse(t *testing.T) {
 		router: &Router{srv: &Server{enc: DefaultResponseEncoder}},
 		req:    &http.Request{Method: http.MethodPost},
 		res:    res,
-		w:      responseWriter{200, res},
+		w:      responseWriter{res, 200},
 	}
 	if !reflect.DeepEqual(w.Response(), res) {
 		t.Errorf("expected %v, got %v", res, w.Response())

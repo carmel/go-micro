@@ -17,20 +17,18 @@ import (
 )
 
 type Discovery struct {
-	config     *Config
-	once       sync.Once
-	ctx        context.Context
-	cancelFunc context.CancelFunc
-	httpClient *resty.Client
-
-	node    atomic.Value
-	nodeIdx uint64
-
-	mutex       sync.RWMutex
+	ctx         context.Context
+	node        atomic.Value
+	config      *Config
+	cancelFunc  context.CancelFunc
+	httpClient  *resty.Client
 	apps        map[string]*appInfo
 	registry    map[string]struct{}
-	lastHost    string
 	cancelPolls context.CancelFunc
+	lastHost    string
+	nodeIdx     uint64
+	mutex       sync.RWMutex
+	once        sync.Once
 }
 
 type appInfo struct {
@@ -416,9 +414,9 @@ func (d *Discovery) polls(ctx context.Context) (apps map[string]*disInstancesInf
 
 // Resolve Discovery resolver.
 type Resolve struct {
-	id    string
 	event chan struct{}
 	d     *Discovery
+	id    string
 }
 
 // Watch instance.

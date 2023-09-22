@@ -16,16 +16,14 @@ import (
 )
 
 type discoveryResolver struct {
-	w  registry.Watcher
-	cc resolver.ClientConn
-
-	ctx    context.Context
-	cancel context.CancelFunc
-
-	insecure    bool
-	debugLog    bool
+	w           registry.Watcher
+	cc          resolver.ClientConn
+	ctx         context.Context
+	cancel      context.CancelFunc
 	selecterKey string
 	subsetSize  int
+	insecure    bool
+	debugLog    bool
 }
 
 func (r *discoveryResolver) watch() {

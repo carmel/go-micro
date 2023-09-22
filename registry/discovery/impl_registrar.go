@@ -77,8 +77,8 @@ func (d *Discovery) register(ctx context.Context, ins *discoveryInstance) (err e
 		}
 	}
 	res := new(struct {
-		Code    int    `json:"code"`
 		Message string `json:"message"`
+		Code    int    `json:"code"`
 	})
 	uri := fmt.Sprintf(_registerURL, d.pickNode())
 

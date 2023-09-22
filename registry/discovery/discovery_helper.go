@@ -39,11 +39,11 @@ const (
 
 // Config Discovery configures.
 type Config struct {
-	Nodes  []string
 	Region string
 	Zone   string
 	Env    string
 	Host   string
+	Nodes  []string
 }
 
 func fixConfig(c *Config) error {
@@ -65,17 +65,16 @@ func fixConfig(c *Config) error {
 
 // discoveryInstance represents a server the client connects to.
 type discoveryInstance struct {
-	Region   string   `json:"region"`           // Region is region.
-	Zone     string   `json:"zone"`             // Zone is IDC.
-	Env      string   `json:"env"`              // Env prod/pre/uat/fat1
-	AppID    string   `json:"appid"`            // AppID is mapping service-tree appId.
-	Hostname string   `json:"hostname"`         // Hostname is hostname from docker
-	Addrs    []string `json:"addrs"`            // Addrs is the address of app instance format: scheme://host
-	Version  string   `json:"version"`          // Version is publishing version.
-	LastTs   int64    `json:"latest_timestamp"` // LastTs is instance latest updated timestamp
-	// Metadata is the information associated with Addr, which may be used to make load balancing decision.
 	Metadata map[string]string `json:"metadata"`
-	Status   int64             `json:"status"` // Status instance status, eg: 1UP 2Waiting
+	Region   string            `json:"region"`
+	Zone     string            `json:"zone"`
+	Env      string            `json:"env"`
+	AppID    string            `json:"appid"`
+	Hostname string            `json:"hostname"`
+	Version  string            `json:"version"`
+	Addrs    []string          `json:"addrs"`
+	LastTs   int64             `json:"latest_timestamp"`
+	Status   int64             `json:"status"`
 }
 
 const _reservedInstanceIDKey = "kratos.v2.serviceinstance.id"
@@ -138,8 +137,8 @@ func toServiceInstance(ins *discoveryInstance) *registry.ServiceInstance {
 // disInstancesInfo instance info.
 type disInstancesInfo struct {
 	Instances map[string][]*discoveryInstance `json:"instances"`
-	LastTs    int64                           `json:"latest_timestamp"`
 	Scheduler *scheduler                      `json:"scheduler"`
+	LastTs    int64                           `json:"latest_timestamp"`
 }
 
 // scheduler scheduler.
@@ -183,11 +182,11 @@ func newParams(c *Config) url.Values {
 }
 
 type discoveryCommonResp struct {
-	Code    int    `json:"code"`
 	Message string `json:"message"`
+	Code    int    `json:"code"`
 }
 
 type discoveryPollsResp struct {
-	Code int                          `json:"code"`
 	Data map[string]*disInstancesInfo `json:"data"`
+	Code int                          `json:"code"`
 }

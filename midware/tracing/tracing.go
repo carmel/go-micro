@@ -14,9 +14,9 @@ import (
 type Option func(*options)
 
 type options struct {
-	tracerName     string
 	tracerProvider trace.TracerProvider
 	propagator     propagation.TextMapPropagator
+	tracerName     string
 }
 
 // WithPropagator with tracer propagator.

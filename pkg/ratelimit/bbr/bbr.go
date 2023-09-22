@@ -70,8 +70,8 @@ type Stat struct {
 // Value of current bucket is not counted in real time.
 // Cache time is equal to a bucket duration.
 type counterCache struct {
-	val  int64
 	time time.Time
+	val  int64
 }
 
 // options of bbr limiter.
@@ -118,19 +118,16 @@ func WithCPUQuota(quota float64) Option {
 // It is inspired by sentinel.
 // https://github.com/alibaba/Sentinel/wiki/%E7%B3%BB%E7%BB%9F%E8%87%AA%E9%80%82%E5%BA%94%E9%99%90%E6%B5%81
 type BBR struct {
-	cpu             cpuGetter
 	passStat        window.RollingCounter
 	rtStat          window.RollingCounter
+	prevDropTime    atomic.Value
+	maxPASSCache    atomic.Value
+	minRtCache      atomic.Value
+	cpu             cpuGetter
+	opts            options
 	inFlight        int64
 	bucketPerSecond int64
 	bucketDuration  time.Duration
-
-	// prevDropTime defines previous start drop since initTime
-	prevDropTime atomic.Value
-	maxPASSCache atomic.Value
-	minRtCache   atomic.Value
-
-	opts options
 }
 
 // NewLimiter returns a bbr limiter

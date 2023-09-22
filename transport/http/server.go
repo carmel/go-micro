@@ -144,23 +144,23 @@ func PathPrefix(prefix string) ServerOption {
 
 // Server is an HTTP server wrapper.
 type Server struct {
+	err      error
+	lis      net.Listener
+	midware  matcher.Matcher
+	decBody  DecodeRequestFunc
+	enc      EncodeResponseFunc
+	router   *mux.Router
+	ene      EncodeErrorFunc
+	endpoint *url.URL
 	*http.Server
-	lis         net.Listener
 	tlsConf     *tls.Config
-	endpoint    *url.URL
-	err         error
-	network     string
-	address     string
-	timeout     time.Duration
-	filters     []FilterFunc
-	midware     matcher.Matcher
 	decVars     DecodeRequestFunc
 	decQuery    DecodeRequestFunc
-	decBody     DecodeRequestFunc
-	enc         EncodeResponseFunc
-	ene         EncodeErrorFunc
+	address     string
+	network     string
+	filters     []FilterFunc
+	timeout     time.Duration
 	strictSlash bool
-	router      *mux.Router
 }
 
 // NewServer creates an HTTP server by options.

@@ -11,28 +11,26 @@ import (
 var httpTemplate string
 
 type serviceDesc struct {
-	ServiceType string // Greeter
-	ServiceName string // helloworld.Greeter
-	Metadata    string // api/helloworld/helloworld.proto
-	Methods     []*methodDesc
 	MethodSets  map[string]*methodDesc
+	ServiceType string
+	ServiceName string
+	Metadata    string
+	Methods     []*methodDesc
 }
 
 type methodDesc struct {
-	// method
 	Name         string
-	OriginalName string // The parsed original name
-	Num          int
+	OriginalName string
 	Request      string
 	Reply        string
 	Comment      string
-	// http_rule
 	Path         string
 	Method       string
-	HasVars      bool
-	HasBody      bool
 	Body         string
 	ResponseBody string
+	Num          int
+	HasVars      bool
+	HasBody      bool
 }
 
 func (s *serviceDesc) execute() string {
