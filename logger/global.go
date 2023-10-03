@@ -54,6 +54,19 @@ func Errorf(format string, arg ...any) {
 	slog.Error(fmt.Sprintf(format, arg...))
 }
 
-// func WithAttrs() {
-// 	slog.DebugContext()
-// }
+func Log(l Level, msg string) {
+	switch l {
+	case INFO:
+		slog.Info(msg)
+	case DEBUG:
+		slog.Debug(msg)
+	case WARN:
+		slog.Warn(msg)
+	case ERROR:
+		slog.Error(msg)
+	}
+}
+
+func With(args ...any) *slog.Logger {
+	return slog.With(args...)
+}

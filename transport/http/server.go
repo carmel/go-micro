@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -55,12 +54,6 @@ func Timeout(timeout time.Duration) ServerOption {
 	return func(s *Server) {
 		s.timeout = timeout
 	}
-}
-
-// Logger with server logger.
-// Deprecated: use global logger instead.
-func Logger(_ log.Logger) ServerOption {
-	return func(s *Server) {}
 }
 
 // Midware with service midware option.

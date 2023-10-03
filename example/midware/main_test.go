@@ -8,30 +8,35 @@ import (
 	"time"
 
 	ms "github.com/carmel/microservices"
+	pb "github.com/carmel/microservices/example/testdata/helloworld"
 	"github.com/carmel/microservices/logger"
 	prom "github.com/carmel/microservices/metrics/prometheus"
+	"github.com/carmel/microservices/midware/auth/jwt"
 	"github.com/carmel/microservices/midware/breaker"
 	"github.com/carmel/microservices/midware/logging"
 	"github.com/carmel/microservices/midware/metrics"
+	"github.com/carmel/microservices/midware/navigator"
 	"github.com/carmel/microservices/midware/ratelimit"
 	"github.com/carmel/microservices/midware/recovery"
+	"github.com/carmel/microservices/midware/validate"
 	"github.com/carmel/microservices/registry/etcd"
 	"github.com/carmel/microservices/transport/grpc"
 	"github.com/carmel/microservices/transport/http"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"github.com/gorilla/handlers"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	clientv3 "go.etcd.io/etcd/client/v3"
-
-	pb "github.com/carmel/microservices/example/testdata/helloworld"
 	srcgrpc "google.golang.org/grpc"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name = "metrics"
+	Name = "midware"
 	// Version is the version of the compiled software.
 	// Version = "v1.0.0"
+	apiKey = "api-key"
 
 	_metricSeconds = prometheus.NewHistogramVec(prometheus.HistogramOpts{
 		Namespace: "server",
@@ -63,7 +68,23 @@ func init() {
 	prometheus.MustRegister(_metricSeconds, _metricRequests)
 }
 
+// NewWhiteListMatcher 创建jwt白名单
+func NewWhiteListMatcher() navigator.MatchFunc {
+	whiteList := make(map[string]struct{})
+	whiteList["/admin.v1.AdminService/Login"] = struct{}{}
+	whiteList["/admin.v1.AdminService/Logout"] = struct{}{}
+	whiteList["/admin.v1.AdminService/Register"] = struct{}{}
+	whiteList["/admin.v1.AdminService/GetPublicContent"] = struct{}{}
+	return func(ctx context.Context, operation string) bool {
+		if _, ok := whiteList[operation]; ok {
+			return false
+		}
+		return true
+	}
+}
+
 func TestServer(t *testing.T) {
+
 	slog := logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
 
 	grpcSrv := grpc.NewServer(
@@ -86,6 +107,8 @@ func TestServer(t *testing.T) {
 				metrics.WithSeconds(prom.NewHistogram(_metricSeconds)),
 				metrics.WithRequests(prom.NewCounter(_metricRequests)),
 			),
+			// 参数校验
+			validate.Validator(),
 		),
 	)
 
@@ -109,7 +132,25 @@ func TestServer(t *testing.T) {
 				metrics.WithSeconds(prom.NewHistogram(_metricSeconds)),
 				metrics.WithRequests(prom.NewCounter(_metricRequests)),
 			),
+			// 白名单
+			navigator.Server(
+				jwt.Server(
+					func(token *jwtv5.Token) (interface{}, error) {
+						return []byte(apiKey), nil
+					},
+					jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
+				),
+			).
+				Match(NewWhiteListMatcher()).Build(),
+			// 参数校验
+			validate.Validator(),
 		),
+		// 跨域
+		http.Filter(handlers.CORS(
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)),
 	)
 	httpSrv.Handle("/metrics", promhttp.Handler())
 
@@ -147,6 +188,12 @@ func TestClient(t *testing.T) {
 		grpc.WithMidware(
 			// 熔断器
 			breaker.Client(),
+			// jwt认证
+			jwt.Client(
+				func(token *jwtv5.Token) (interface{}, error) {
+					return []byte(apiKey), nil
+				},
+			),
 		),
 	)
 	if err != nil {
@@ -163,6 +210,12 @@ func TestClient(t *testing.T) {
 		http.WithMidware(
 			// 熔断器
 			breaker.Client(),
+			// jwt认证
+			jwt.Client(
+				func(token *jwtv5.Token) (interface{}, error) {
+					return []byte(apiKey), nil
+				},
+			),
 		),
 	)
 	if err != nil {

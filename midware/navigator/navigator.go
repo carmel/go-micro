@@ -1,4 +1,4 @@
-package selector
+package navigator
 
 import (
 	"context"
@@ -25,7 +25,7 @@ var (
 	}
 )
 
-// Builder is a selector builder
+// Builder is a navigator builder
 type Builder struct {
 	match  MatchFunc
 	prefix []string
@@ -35,12 +35,12 @@ type Builder struct {
 	client bool
 }
 
-// Server selector midware
+// Server navigator midware
 func Server(ms ...midware.Midware) *Builder {
 	return &Builder{ms: ms}
 }
 
-// Client selector midware
+// Client navigator midware
 func Client(ms ...midware.Midware) *Builder {
 	return &Builder{client: true, ms: ms}
 }
@@ -77,7 +77,7 @@ func (b *Builder) Build() midware.Midware {
 	} else {
 		transporter = serverTransporter
 	}
-	return selector(transporter, b.matches, b.ms...)
+	return navigator(transporter, b.matches, b.ms...)
 }
 
 // matches is match operation compliance Builder
@@ -113,8 +113,8 @@ func (b *Builder) matches(ctx context.Context, transporter transporter) bool {
 	return false
 }
 
-// selector midware
-func selector(transporter transporter, match func(context.Context, transporter) bool, ms ...midware.Midware) midware.Midware {
+// navigator midware
+func navigator(transporter transporter, match func(context.Context, transporter) bool, ms ...midware.Midware) midware.Midware {
 	return func(handler midware.Handler) midware.Handler {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			if !match(ctx, transporter) {
