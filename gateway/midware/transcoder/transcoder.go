@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
 	"github.com/carmel/microservices/gateway/midware"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/encoding/protojson"

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
-	v1 "github.com/carmel/microservices/gateway/api/gateway/midware/cors/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
+	v1 "github.com/carmel/microservices/gateway/api/midware/cors/v1"
 	"github.com/carmel/microservices/gateway/midware"
 	"google.golang.org/protobuf/types/known/anypb"
 )

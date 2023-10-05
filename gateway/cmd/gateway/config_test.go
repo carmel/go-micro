@@ -5,11 +5,11 @@ import (
 
 	"github.com/carmel/microservices/config"
 	"github.com/carmel/microservices/config/file"
-	configv1 "github.com/carmel/microservices/gateway/api/gateway/config/v1"
-	circuitbreakerv1 "github.com/carmel/microservices/gateway/api/gateway/midware/breaker/v1"
-	corsv1 "github.com/carmel/microservices/gateway/api/gateway/midware/cors/v1"
-	rewritev1 "github.com/carmel/microservices/gateway/api/gateway/midware/rewrite/v1"
-	tracingv1 "github.com/carmel/microservices/gateway/api/gateway/midware/tracing/v1"
+	configv1 "github.com/carmel/microservices/gateway/api/config/v1"
+	circuitbreakerv1 "github.com/carmel/microservices/gateway/api/midware/breaker/v1"
+	corsv1 "github.com/carmel/microservices/gateway/api/midware/cors/v1"
+	rewritev1 "github.com/carmel/microservices/gateway/api/midware/rewrite/v1"
+	tracingv1 "github.com/carmel/microservices/gateway/api/midware/tracing/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -157,3 +157,8 @@ func TestConfigUnmarshaler(t *testing.T) {
 		t.Errorf("inconsistent gateway config")
 	}
 }
+
+// func TestLog(t *testing.T) {
+// 	log := logger.With("test", "gateway")
+// 	log.Error("some error %s", "sdfds", "22")
+// }

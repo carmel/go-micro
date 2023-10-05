@@ -1,8 +1,8 @@
 syntax = "proto3";
 package gateway.midware.circuitbreaker.v1;
-option go_package = "github.com/carmel/microservices/gateway/api/gateway/midware/circuitbreaker/v1";
+option go_package = "github.com/carmel/microservices/gateway/api/midware/breaker/v1";
 import "google/protobuf/duration.proto";
-import "gateway/config/v1/gateway.proto";
+import "config/v1/gateway.proto";
 
 // CircuitBreaker midware config.
 message CircuitBreaker {

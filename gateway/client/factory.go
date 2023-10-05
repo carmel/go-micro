@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync/atomic"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
 
 	"github.com/carmel/microservices/logger"
 	"github.com/carmel/microservices/registry"

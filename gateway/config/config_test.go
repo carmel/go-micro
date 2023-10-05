@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	configv1 "github.com/carmel/microservices/gateway/api/gateway/config/v1"
-	corsv1 "github.com/carmel/microservices/gateway/api/gateway/midware/cors/v1"
-	tracingv1 "github.com/carmel/microservices/gateway/api/gateway/midware/tracing/v1"
+	configv1 "github.com/carmel/microservices/gateway/api/config/v1"
+	corsv1 "github.com/carmel/microservices/gateway/api/midware/cors/v1"
+	tracingv1 "github.com/carmel/microservices/gateway/api/midware/tracing/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"

@@ -4,12 +4,13 @@ import (
 	"errors"
 	"strings"
 
-	configv1 "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	configv1 "github.com/carmel/microservices/gateway/api/config/v1"
 	"github.com/carmel/microservices/logger"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-var LOG logger.Logger //= logger.NewHelper(logger.With(logger.GetLogger(), "source", "midware"))
+// var LOG logger.Logger //= logger.NewHelper(logger.With(logger.GetLogger(), "source", "midware"))
+var LOG = logger.WithLog("module", "midware")
 var globalRegistry = NewRegistry()
 var _failedMiddlewareCreate = prometheus.NewCounterVec(prometheus.CounterOpts{
 	Namespace: "go",
@@ -18,9 +19,8 @@ var _failedMiddlewareCreate = prometheus.NewCounterVec(prometheus.CounterOpts{
 	Help:      "The total number of failed midware create",
 }, []string{"name", "required"})
 
-func Init(log logger.Logger) {
+func init() {
 	prometheus.MustRegister(_failedMiddlewareCreate)
-	LOG = log.With("source", "midware")
 }
 
 // ErrNotFound is midware not found.
@@ -61,7 +61,7 @@ func (p *middlewareRegistry) Create(cfg *configv1.Midware) (MidwareV2, error) {
 			instance, err := method(cfg)
 			if err != nil {
 				_failedMiddlewareCreate.WithLabelValues(cfg.Name, "true").Inc()
-				LOG.With("reason", "create_required_middleware_failed", "name", cfg.Name, "error", err, "config", cfg).Log(logger.ERROR, "Failed to create required midware")
+				LOG(logger.ERROR, "create required middleware %s failed in %v: %s", cfg.Name, cfg, err)
 				return nil, err
 			}
 			return instance, nil
@@ -69,7 +69,7 @@ func (p *middlewareRegistry) Create(cfg *configv1.Midware) (MidwareV2, error) {
 		instance, err := method(cfg)
 		if err != nil {
 			_failedMiddlewareCreate.WithLabelValues(cfg.Name, "false").Inc()
-			LOG.With("reason", "create_optional_middleware_failed", "name", cfg.Name, "error", err, "config", cfg).Log(logger.ERROR, "Failed to create optional midware")
+			LOG(logger.ERROR, "create optional middleware failed %s failed in %v: %s", cfg.Name, cfg, err)
 			return EmptyMiddleware, nil
 		}
 		return instance, nil

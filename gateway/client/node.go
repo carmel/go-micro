@@ -13,7 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"golang.org/x/net/http2"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
 	"github.com/carmel/microservices/gateway/midware"
 )
 

@@ -19,11 +19,12 @@ import (
 
 var ErrCancelWatch = errors.New("cancel watch")
 var globalServiceWatcher = newServiceWatcher()
-var LOG logger.Logger // = logger.NewHelper(logger.With(logger.GetLogger(), "source", "servicewatch"))
 
-func Init(log logger.Logger) {
+// var LOG logger.Logger // = logger.NewHelper(logger.With(logger.GetLogger(), "source", "servicewatch"))
+var LOG = logger.WithLog("module", "servicewatch")
+
+func init() {
 	debug.Register("watcher", globalServiceWatcher)
-	LOG = log.With("source", "servicewatch")
 }
 
 func uuid4() string {
@@ -107,7 +108,7 @@ func (s *serviceWatcher) Add(ctx context.Context, discovery registry.Discovery, 
 			<-ws.initializedChan
 
 			if len(ws.selectedInstances) > 0 {
-				LOG.Logf(logger.INFO, "Using cached %d selected instances on endpoint: %s, hash: %s", len(ws.selectedInstances), endpoint, instancesSetHash(ws.selectedInstances))
+				LOG(logger.INFO, "Using cached %d selected instances on endpoint: %s, hash: %s", len(ws.selectedInstances), endpoint, instancesSetHash(ws.selectedInstances))
 				applier.Callback(ws.selectedInstances)
 				return true
 			}
@@ -120,22 +121,22 @@ func (s *serviceWatcher) Add(ctx context.Context, discovery registry.Discovery, 
 		}
 		watcher, err := discovery.Watch(ctx, endpoint)
 		if err != nil {
-			LOG.Logf(logger.ERROR, "Failed to initialize watcher on endpoint: %s, err: %+v", endpoint, err)
+			LOG(logger.ERROR, "Failed to initialize watcher on endpoint: %s, err: %+v", endpoint, err)
 			return false
 		}
-		LOG.Logf(logger.INFO, "Succeeded to initialize watcher on endpoint: %s", endpoint)
+		LOG(logger.INFO, "Succeeded to initialize watcher on endpoint: %s", endpoint)
 		ws.watcher = watcher
 		s.watcherStatus[endpoint] = ws
 
 		func() {
 			defer close(ws.initializedChan)
-			LOG.Logf(logger.INFO, "Starting to do initialize services discovery on endpoint: %s", endpoint)
+			LOG(logger.INFO, "Starting to do initialize services discovery on endpoint: %s", endpoint)
 			services, err := watcher.Next()
 			if err != nil {
-				LOG.Logf(logger.ERROR, "Failed to do initialize services discovery on endpoint: %s, err: %+v, the watch process will attempt asynchronously", endpoint, err)
+				LOG(logger.ERROR, "Failed to do initialize services discovery on endpoint: %s, err: %+v, the watch process will attempt asynchronously", endpoint, err)
 				return
 			}
-			LOG.Logf(logger.INFO, "Succeeded to do initialize services discovery on endpoint: %s, %d services, hash: %s", endpoint, len(services), instancesSetHash(ws.selectedInstances))
+			LOG(logger.INFO, "Succeeded to do initialize services discovery on endpoint: %s, %d services, hash: %s", endpoint, len(services), instancesSetHash(ws.selectedInstances))
 			ws.selectedInstances = services
 			applier.Callback(services)
 		}()
@@ -145,18 +146,18 @@ func (s *serviceWatcher) Add(ctx context.Context, discovery registry.Discovery, 
 				services, err := watcher.Next()
 				if err != nil {
 					if errors.Is(err, context.Canceled) {
-						LOG.Logf(logger.WARN, "The watch process on: %s has been canceled", endpoint)
+						LOG(logger.WARN, "The watch process on: %s has been canceled", endpoint)
 						return
 					}
-					LOG.Logf(logger.ERROR, "Failed to watch on endpoint: %s, err: %+v, the watch process will attempt again after 1 second", endpoint, err)
+					LOG(logger.ERROR, "Failed to watch on endpoint: %s, err: %+v, the watch process will attempt again after 1 second", endpoint, err)
 					time.Sleep(time.Second)
 					continue
 				}
 				if len(services) == 0 {
-					LOG.Logf(logger.WARN, "Empty services on endpoint: %s, this most likely no available instance in discovery", endpoint)
+					LOG(logger.WARN, "Empty services on endpoint: %s, this most likely no available instance in discovery", endpoint)
 					continue
 				}
-				LOG.Logf(logger.INFO, "Received %d services on endpoint: %s, hash: %s", len(services), endpoint, instancesSetHash(services))
+				LOG(logger.INFO, "Received %d services on endpoint: %s, hash: %s", len(services), endpoint, instancesSetHash(services))
 				s.setSelectedCache(endpoint, services)
 				s.doCallback(endpoint, services)
 			}
@@ -165,7 +166,7 @@ func (s *serviceWatcher) Add(ctx context.Context, discovery registry.Discovery, 
 		return false
 	}()
 
-	LOG.Logf(logger.INFO, "Add appliers on endpoint: %s", endpoint)
+	LOG(logger.INFO, "Add appliers on endpoint: %s", endpoint)
 	if applier != nil {
 		if _, ok := s.appliers[endpoint]; !ok {
 			s.appliers[endpoint] = make(map[string]Applier)
@@ -185,17 +186,17 @@ func (s *serviceWatcher) doCallback(endpoint string, services []*registry.Servic
 			if err := applier.Callback(services); err != nil {
 				if errors.Is(err, ErrCancelWatch) {
 					canceled += 1
-					LOG.Logf(logger.WARN, "appliers on endpoint: %s, id: %s is canceled, will delete later", endpoint, id)
+					LOG(logger.WARN, "appliers on endpoint: %s, id: %s is canceled, will delete later", endpoint, id)
 					continue
 				}
-				LOG.Logf(logger.ERROR, "Failed to call appliers on endpoint: %q: %+v", endpoint, err)
+				LOG(logger.ERROR, "Failed to call appliers on endpoint: %q: %+v", endpoint, err)
 			}
 		}
 	}()
 	if canceled <= 0 {
 		return
 	}
-	LOG.Logf(logger.WARN, "There are %d canceled appliers on endpoint: %q, will be deleted later in cleanup proc", canceled, endpoint)
+	LOG(logger.WARN, "There are %d canceled appliers on endpoint: %q, will be deleted later in cleanup proc", canceled, endpoint)
 }
 
 func (s *serviceWatcher) proccleanup() {
@@ -208,7 +209,7 @@ func (s *serviceWatcher) proccleanup() {
 				for id, applier := range appliers {
 					if applier.Canceled() {
 						cleanup = append(cleanup, id)
-						LOG.Logf(logger.WARN, "applier on endpoint: %s, id: %s is canceled, will be deleted later", endpoint, id)
+						LOG(logger.WARN, "applier on endpoint: %s, id: %s is canceled, will be deleted later", endpoint, id)
 						continue
 					}
 				}
@@ -216,21 +217,21 @@ func (s *serviceWatcher) proccleanup() {
 			if len(cleanup) <= 0 {
 				return
 			}
-			LOG.Logf(logger.INFO, "Cleanup appliers on endpoint: %q with keys: %+v", endpoint, cleanup)
+			LOG(logger.INFO, "Cleanup appliers on endpoint: %q with keys: %+v", endpoint, cleanup)
 			func() {
 				s.lock.Lock()
 				defer s.lock.Unlock()
 				for _, id := range cleanup {
 					delete(appliers, id)
 				}
-				LOG.Logf(logger.INFO, "Succeeded to clean %d appliers on endpoint: %q, now %d appliers are available", len(cleanup), endpoint, len(appliers))
+				LOG(logger.INFO, "Succeeded to clean %d appliers on endpoint: %q, now %d appliers are available", len(cleanup), endpoint, len(appliers))
 			}()
 		}
 	}
 
 	const interval = time.Second * 30
 	for {
-		LOG.Logf(logger.INFO, "Start to cleanup appliers on all endpoints for every %s", interval.String())
+		LOG(logger.INFO, "Start to cleanup appliers on all endpoints for every %s", interval.String())
 		time.Sleep(interval)
 		doCleanup()
 	}

@@ -27,7 +27,7 @@ endpoints:
       - target: "127.0.0.1:8000"
     #      - target: 'discovery:///bbs'
     middlewares:
-      - name: circuitbreaker
+      - name: breaker
         options:
           "@type": type.googleapis.com/gateway.midware.circuitbreaker.v1.CircuitBreaker
           successRatio:

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
 	"github.com/carmel/microservices/gateway/client"
 	"github.com/carmel/microservices/gateway/midware"
 	"github.com/carmel/microservices/gateway/midware/logging"

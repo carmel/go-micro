@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 

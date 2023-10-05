@@ -17,6 +17,8 @@ func TestLog(t *testing.T) {
 	Warnf("Warnf log: %s", "message")
 	Errorf("Errorf log: %s", "message")
 	Errorf("Errorf log message")
+	With("att1", "22").Error("sffs")
+	WithLog("att1", "22")(DEBUG, "sdfd")
 }
 
 func BenchmarkZap(b *testing.B) {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
 )
 
 func TestRetryByStatusCode(t *testing.T) {

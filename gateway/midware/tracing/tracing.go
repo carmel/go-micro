@@ -9,8 +9,8 @@ import (
 	"time"
 
 	ms "github.com/carmel/microservices"
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
-	v1 "github.com/carmel/microservices/gateway/api/gateway/midware/tracing/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
+	v1 "github.com/carmel/microservices/gateway/api/midware/tracing/v1"
 	"github.com/carmel/microservices/gateway/midware"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"

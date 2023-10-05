@@ -5,8 +5,8 @@ import (
 	"path"
 	"strings"
 
-	config "github.com/carmel/microservices/gateway/api/gateway/config/v1"
-	v1 "github.com/carmel/microservices/gateway/api/gateway/midware/rewrite/v1"
+	config "github.com/carmel/microservices/gateway/api/config/v1"
+	v1 "github.com/carmel/microservices/gateway/api/midware/rewrite/v1"
 
 	"github.com/carmel/microservices/gateway/midware"
 	"google.golang.org/protobuf/proto"
