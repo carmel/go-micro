@@ -47,5 +47,12 @@ go install golang.org/x/vuln/cmd/govulncheck@latest
 govulncheck ./...
 ```
 
+### 安装protoc插件
+```sh
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go install github.com/carmel/go-micro/cmd/protoc-gen-go-http@latest
+go install github.com/carmel/go-micro/cmd/protoc-gen-go-errors@latest
+```
+
 ### 部署架构
-![architecture](microservices.png)
+![architecture](go-micro.png)
