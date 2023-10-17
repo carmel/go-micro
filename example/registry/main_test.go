@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
-	ms "github.com/carmel/microservices"
-	pb "github.com/carmel/microservices/example/testdata/helloworld"
-	"github.com/carmel/microservices/midware/recovery"
-	"github.com/carmel/microservices/registry/etcd"
-	"github.com/carmel/microservices/transport/grpc"
-	"github.com/carmel/microservices/transport/http"
+	ms "github.com/carmel/go-micro"
+	pb "github.com/carmel/go-micro/example/testdata/helloworld"
+	"github.com/carmel/go-micro/midware/recovery"
+	"github.com/carmel/go-micro/registry/etcd"
+	"github.com/carmel/go-micro/transport/grpc"
+	"github.com/carmel/go-micro/transport/http"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	srcgrpc "google.golang.org/grpc"
 )

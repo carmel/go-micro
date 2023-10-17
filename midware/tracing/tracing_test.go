@@ -10,8 +10,8 @@ import (
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/transport"
 )
 
 var _ transport.Transporter = (*mockTransport)(nil)

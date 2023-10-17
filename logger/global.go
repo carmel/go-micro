@@ -72,16 +72,17 @@ func With(attrs ...any) *slog.Logger {
 }
 
 func WithLog(attrs ...any) func(l Level, format string, arg ...any) {
+	log := slog.With(attrs...)
 	return func(l Level, format string, arg ...any) {
 		switch l {
 		case INFO:
-			slog.With(attrs...).Info(fmt.Sprintf(format, arg...))
+			log.Info(fmt.Sprintf(format, arg...))
 		case DEBUG:
-			slog.With(attrs...).Debug(fmt.Sprintf(format, arg...))
+			log.Debug(fmt.Sprintf(format, arg...))
 		case WARN:
-			slog.With(attrs...).Warn(fmt.Sprintf(format, arg...))
+			log.Warn(fmt.Sprintf(format, arg...))
 		case ERROR:
-			slog.With(attrs...).Error(fmt.Sprintf(format, arg...))
+			log.Error(fmt.Sprintf(format, arg...))
 		}
 	}
 }

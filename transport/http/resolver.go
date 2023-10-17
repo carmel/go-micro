@@ -9,11 +9,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/carmel/microservices/endpoint"
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/pkg/subset"
-	"github.com/carmel/microservices/registry"
-	"github.com/carmel/microservices/selector"
+	"github.com/carmel/go-micro/endpoint"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/pkg/subset"
+	"github.com/carmel/go-micro/registry"
+	"github.com/carmel/go-micro/selector"
 )
 
 // Target is resolver target

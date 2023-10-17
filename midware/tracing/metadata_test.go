@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	ms "github.com/carmel/microservices"
-	"github.com/carmel/microservices/metadata"
+	ms "github.com/carmel/go-micro"
+	"github.com/carmel/go-micro/metadata"
 
 	"go.opentelemetry.io/otel/propagation"
 )
@@ -27,9 +27,9 @@ func TestMetadata_Inject(t *testing.T) {
 			want: "https://go-kratos.dev",
 		},
 		{
-			name: "https://github.com/carmel/microservices",
-			args: args{"https://github.com/carmel/microservices", propagation.HeaderCarrier{"mode": []string{"test"}}},
-			want: "https://github.com/carmel/microservices",
+			name: "https://github.com/carmel/go-micro",
+			args: args{"https://github.com/carmel/go-micro", propagation.HeaderCarrier{"mode": []string{"test"}}},
+			want: "https://github.com/carmel/go-micro",
 		},
 	}
 	for _, tt := range tests {
@@ -65,15 +65,15 @@ func TestMetadata_Extract(t *testing.T) {
 			want: "https://go-kratos.dev",
 		},
 		{
-			name: "https://github.com/carmel/microservices",
+			name: "https://github.com/carmel/go-micro",
 			args: args{
 				parent:  metadata.NewServerContext(context.Background(), metadata.Metadata{}),
-				carrier: propagation.HeaderCarrier{"X-Md-Service-Name": []string{"https://github.com/carmel/microservices"}},
+				carrier: propagation.HeaderCarrier{"X-Md-Service-Name": []string{"https://github.com/carmel/go-micro"}},
 			},
-			want: "https://github.com/carmel/microservices",
+			want: "https://github.com/carmel/go-micro",
 		},
 		{
-			name: "https://github.com/carmel/microservices",
+			name: "https://github.com/carmel/go-micro",
 			args: args{
 				parent:  metadata.NewServerContext(context.Background(), metadata.Metadata{}),
 				carrier: propagation.HeaderCarrier{"X-Md-Service-Name": nil},

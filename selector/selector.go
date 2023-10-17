@@ -3,7 +3,7 @@ package selector
 import (
 	"context"
 
-	"github.com/carmel/microservices/errors"
+	"github.com/carmel/go-micro/errors"
 )
 
 // ErrNoAvailable is no available node.

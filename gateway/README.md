@@ -1,6 +1,6 @@
 # Gateway
-[![Build Status](https://github.com/carmel/microservices/gateway/workflows/Test/badge.svg?branch=main)](https://github.com/carmel/microservices/gateway/actions?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/carmel/microservices/gateway/branch/main/graph/badge.svg)](https://codecov.io/gh/carmel/microservices/gateway)
+[![Build Status](https://github.com/carmel/go-micro/gateway/workflows/Test/badge.svg?branch=main)](https://github.com/carmel/go-micro/gateway/actions?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/carmel/go-micro/gateway/branch/main/graph/badge.svg)](https://codecov.io/gh/carmel/go-micro/gateway)
 
 HTTP -> Proxy -> Router -> Midware -> Client -> Selector -> Node
 

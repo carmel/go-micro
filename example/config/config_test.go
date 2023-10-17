@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/microservices/config"
-	"github.com/carmel/microservices/config/etcd"
-	"github.com/carmel/microservices/config/file"
+	"github.com/carmel/go-micro/config"
+	"github.com/carmel/go-micro/config/etcd"
+	"github.com/carmel/go-micro/config/file"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 )

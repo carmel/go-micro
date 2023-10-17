@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/carmel/microservices/config"
-	"github.com/carmel/microservices/config/file"
+	"github.com/carmel/go-micro/config"
+	"github.com/carmel/go-micro/config/file"
 )
 
 const _testJSON = `

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	kratoserrors "github.com/carmel/microservices/errors"
-	"github.com/carmel/microservices/midware"
+	kratoserrors "github.com/carmel/go-micro/errors"
+	"github.com/carmel/go-micro/midware"
 )
 
 // protoVali implement validate.validator

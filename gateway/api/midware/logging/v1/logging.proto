@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package gateway.midware.logging.v1;
 
-option go_package = "github.com/carmel/microservices/gateway/api/midware/logging/v1";
+option go_package = "github.com/carmel/go-micro/gateway/api/midware/logging/v1";
 
 // logging midware config.
 message Logging {}

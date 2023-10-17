@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/pkg/feature"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/pkg/feature"
 	"github.com/google/uuid"
 	"go.uber.org/atomic"
 	"golang.org/x/exp/rand"

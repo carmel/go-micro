@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	configv1 "github.com/carmel/microservices/gateway/api/config/v1"
-	"github.com/carmel/microservices/logger"
+	configv1 "github.com/carmel/go-micro/gateway/api/config/v1"
+	"github.com/carmel/go-micro/logger"
 	"google.golang.org/protobuf/encoding/protojson"
 	"sigs.k8s.io/yaml"
 )

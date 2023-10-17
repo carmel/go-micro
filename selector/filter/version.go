@@ -3,7 +3,7 @@ package filter
 import (
 	"context"
 
-	"github.com/carmel/microservices/selector"
+	"github.com/carmel/go-micro/selector"
 )
 
 // Version is version filter.

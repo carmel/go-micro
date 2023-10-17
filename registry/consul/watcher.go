@@ -3,7 +3,7 @@ package consul
 import (
 	"context"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 type watcher struct {

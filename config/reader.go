@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"dario.cat/mergo"
-	"github.com/carmel/microservices/logger"
+	"github.com/carmel/go-micro/logger"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

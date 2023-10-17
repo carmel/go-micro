@@ -5,8 +5,8 @@ import (
 
 	"go.opentelemetry.io/otel/propagation"
 
-	ms "github.com/carmel/microservices"
-	"github.com/carmel/microservices/metadata"
+	ms "github.com/carmel/go-micro"
+	"github.com/carmel/go-micro/metadata"
 )
 
 const serviceHeader = "x-md-service-name"

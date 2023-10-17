@@ -11,9 +11,9 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	bdtest "github.com/carmel/microservices/example/testdata/binding"
-	ectest "github.com/carmel/microservices/example/testdata/codec"
-	"github.com/carmel/microservices/example/testdata/complex"
+	bdtest "github.com/carmel/go-micro/example/testdata/binding"
+	ectest "github.com/carmel/go-micro/example/testdata/codec"
+	"github.com/carmel/go-micro/example/testdata/complex"
 )
 
 type LoginRequest struct {

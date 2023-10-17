@@ -1,4 +1,4 @@
-package microservices
+package micro
 
 import (
 	"context"
@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/registry"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/registry"
+	"github.com/carmel/go-micro/transport"
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
 )

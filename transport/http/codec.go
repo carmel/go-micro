@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"net/url"
 
-	cc "github.com/carmel/microservices/codec"
-	"github.com/carmel/microservices/errors"
-	"github.com/carmel/microservices/pkg/httputil"
-	"github.com/carmel/microservices/transport/http/binding"
+	cc "github.com/carmel/go-micro/codec"
+	"github.com/carmel/go-micro/errors"
+	"github.com/carmel/go-micro/pkg/httputil"
+	"github.com/carmel/go-micro/transport/http/binding"
 	"github.com/gorilla/mux"
 )
 

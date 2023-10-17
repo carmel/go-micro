@@ -3,8 +3,8 @@ package grpc
 import (
 	"google.golang.org/grpc/metadata"
 
-	"github.com/carmel/microservices/selector"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/selector"
+	"github.com/carmel/go-micro/transport"
 )
 
 var _ transport.Transporter = (*Transport)(nil)

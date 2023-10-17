@@ -4,7 +4,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 type serviceSet struct {

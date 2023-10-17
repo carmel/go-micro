@@ -5,9 +5,9 @@ import (
 	"google.golang.org/grpc/balancer/base"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/carmel/microservices/registry"
-	"github.com/carmel/microservices/selector"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/registry"
+	"github.com/carmel/go-micro/selector"
+	"github.com/carmel/go-micro/transport"
 )
 
 const (

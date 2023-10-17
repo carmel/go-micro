@@ -8,7 +8,7 @@ import (
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	"github.com/carmel/microservices/config"
+	"github.com/carmel/go-micro/config"
 )
 
 // Option is etcd config option.

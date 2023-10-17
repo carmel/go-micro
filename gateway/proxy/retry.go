@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	config "github.com/carmel/microservices/gateway/api/config/v1"
-	"github.com/carmel/microservices/gateway/proxy/condition"
-	"github.com/carmel/microservices/pkg/feature"
+	config "github.com/carmel/go-micro/gateway/api/config/v1"
+	"github.com/carmel/go-micro/gateway/proxy/condition"
+	"github.com/carmel/go-micro/pkg/feature"
 )
 
 var (

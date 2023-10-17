@@ -3,7 +3,7 @@ package xml
 import (
 	"encoding/xml"
 
-	cc "github.com/carmel/microservices/codec"
+	cc "github.com/carmel/go-micro/codec"
 )
 
 // Name is the name registered for the xml codec.

@@ -3,7 +3,7 @@ package env
 import (
 	"context"
 
-	"github.com/carmel/microservices/config"
+	"github.com/carmel/go-micro/config"
 )
 
 var _ config.Watcher = (*watcher)(nil)

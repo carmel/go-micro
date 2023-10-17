@@ -10,7 +10,7 @@ import (
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 func TestRegistry(t *testing.T) {

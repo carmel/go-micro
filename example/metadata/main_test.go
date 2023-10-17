@@ -5,12 +5,12 @@ import (
 	"log"
 	"testing"
 
-	ms "github.com/carmel/microservices"
-	pb "github.com/carmel/microservices/example/testdata/helloworld"
-	"github.com/carmel/microservices/metadata"
-	mmd "github.com/carmel/microservices/midware/metadata"
-	"github.com/carmel/microservices/transport/grpc"
-	"github.com/carmel/microservices/transport/http"
+	ms "github.com/carmel/go-micro"
+	pb "github.com/carmel/go-micro/example/testdata/helloworld"
+	"github.com/carmel/go-micro/metadata"
+	mmd "github.com/carmel/go-micro/midware/metadata"
+	"github.com/carmel/go-micro/transport/grpc"
+	"github.com/carmel/go-micro/transport/http"
 )
 
 func TestServer(t *testing.T) {

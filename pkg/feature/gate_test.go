@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/carmel/microservices/pkg/feature"
+	"github.com/carmel/go-micro/pkg/feature"
 )
 
 var (

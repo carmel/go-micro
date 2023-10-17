@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	config "github.com/carmel/microservices/gateway/api/config/v1"
+	config "github.com/carmel/go-micro/gateway/api/config/v1"
 )
 
 type Condition interface {

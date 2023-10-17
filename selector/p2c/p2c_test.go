@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/microservices/registry"
-	"github.com/carmel/microservices/selector"
-	"github.com/carmel/microservices/selector/filter"
+	"github.com/carmel/go-micro/registry"
+	"github.com/carmel/go-micro/selector"
+	"github.com/carmel/go-micro/selector/filter"
 )
 
 func TestWrr3(t *testing.T) {

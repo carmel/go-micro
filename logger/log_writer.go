@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/carmel/microservices/tool"
+	"github.com/carmel/go-micro/tool"
 )
 
 type LogWriter struct {

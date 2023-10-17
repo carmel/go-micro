@@ -3,7 +3,7 @@ package yaml
 import (
 	"gopkg.in/yaml.v3"
 
-	cc "github.com/carmel/microservices/codec"
+	cc "github.com/carmel/go-micro/codec"
 )
 
 // Name is the name registered for the yaml codec.

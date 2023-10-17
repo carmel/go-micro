@@ -12,9 +12,9 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/peer"
 
-	"github.com/carmel/microservices/example/testdata/binding"
-	"github.com/carmel/microservices/metadata"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/example/testdata/binding"
+	"github.com/carmel/go-micro/metadata"
+	"github.com/carmel/go-micro/transport"
 )
 
 func Test_parseFullMethod(t *testing.T) {

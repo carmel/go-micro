@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	config "github.com/carmel/microservices/gateway/api/config/v1"
-	"github.com/carmel/microservices/gateway/midware"
-	"github.com/carmel/microservices/logger"
+	config "github.com/carmel/go-micro/gateway/api/config/v1"
+	"github.com/carmel/go-micro/gateway/midware"
+	"github.com/carmel/go-micro/logger"
 )
 
 func init() {

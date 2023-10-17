@@ -4,7 +4,7 @@ import (
 	"io"
 	"net/http"
 
-	configv1 "github.com/carmel/microservices/gateway/api/config/v1"
+	configv1 "github.com/carmel/go-micro/gateway/api/config/v1"
 )
 
 // Factory is a midware factory.

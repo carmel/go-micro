@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/transport"
 )
 
 var _ Transporter = (*Transport)(nil)

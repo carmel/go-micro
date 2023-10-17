@@ -3,13 +3,13 @@ package breaker
 import (
 	"context"
 
-	"github.com/carmel/microservices/pkg/breaker"
-	"github.com/carmel/microservices/pkg/breaker/sre"
+	"github.com/carmel/go-micro/pkg/breaker"
+	"github.com/carmel/go-micro/pkg/breaker/sre"
 
-	"github.com/carmel/microservices/errors"
-	"github.com/carmel/microservices/midware"
-	"github.com/carmel/microservices/pkg/group"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/errors"
+	"github.com/carmel/go-micro/midware"
+	"github.com/carmel/go-micro/pkg/group"
+	"github.com/carmel/go-micro/transport"
 )
 
 // ErrNotAllowed is request failed due to circuit breaker triggered.

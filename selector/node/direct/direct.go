@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/carmel/microservices/selector"
+	"github.com/carmel/go-micro/selector"
 )
 
 const (

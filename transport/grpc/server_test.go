@@ -13,11 +13,11 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/carmel/microservices/errors"
-	pb "github.com/carmel/microservices/example/testdata/helloworld"
-	"github.com/carmel/microservices/midware"
-	"github.com/carmel/microservices/pkg/matcher"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/errors"
+	pb "github.com/carmel/go-micro/example/testdata/helloworld"
+	"github.com/carmel/go-micro/midware"
+	"github.com/carmel/go-micro/pkg/matcher"
+	"github.com/carmel/go-micro/transport"
 )
 
 // server is used to implement helloworld.GreeterServer.

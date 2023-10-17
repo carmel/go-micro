@@ -5,10 +5,10 @@ import (
 	"io"
 	"net/http"
 
-	config "github.com/carmel/microservices/gateway/api/config/v1"
-	"github.com/carmel/microservices/gateway/midware"
-	"github.com/carmel/microservices/pkg/ratelimit"
-	"github.com/carmel/microservices/pkg/ratelimit/bbr"
+	config "github.com/carmel/go-micro/gateway/api/config/v1"
+	"github.com/carmel/go-micro/gateway/midware"
+	"github.com/carmel/go-micro/pkg/ratelimit"
+	"github.com/carmel/go-micro/pkg/ratelimit/bbr"
 )
 
 var _nopBody = io.NopCloser(&bytes.Buffer{})

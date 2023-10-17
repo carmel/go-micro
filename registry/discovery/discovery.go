@@ -13,7 +13,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/pkg/errors"
 
-	"github.com/carmel/microservices/logger"
+	"github.com/carmel/go-micro/logger"
 )
 
 type Discovery struct {

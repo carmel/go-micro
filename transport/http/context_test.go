@@ -54,7 +54,7 @@ func TestContextForm(t *testing.T) {
 func TestContextQuery(t *testing.T) {
 	w := wrapper{
 		router: testRouter,
-		req:    &http.Request{URL: &url.URL{Scheme: "https", Host: "github.com", Path: "carmel/microservices", RawQuery: "page=1"}, Method: http.MethodPost},
+		req:    &http.Request{URL: &url.URL{Scheme: "https", Host: "github.com", Path: "carmel/go-micro", RawQuery: "page=1"}, Method: http.MethodPost},
 		res:    nil,
 		w:      responseWriter{},
 	}

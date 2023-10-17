@@ -3,7 +3,7 @@ package prometheus
 import (
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/carmel/microservices/metrics"
+	"github.com/carmel/go-micro/metrics"
 )
 
 var _ metrics.Gauge = (*gauge)(nil)

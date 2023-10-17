@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/carmel/microservices/gateway/proxy/debug"
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/gateway/proxy/debug"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/registry"
 	"github.com/google/uuid"
 )
 

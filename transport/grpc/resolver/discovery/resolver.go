@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc/attributes"
 	"google.golang.org/grpc/resolver"
 
-	"github.com/carmel/microservices/endpoint"
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/pkg/subset"
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/endpoint"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/pkg/subset"
+	"github.com/carmel/go-micro/registry"
 )
 
 type discoveryResolver struct {

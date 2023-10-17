@@ -3,8 +3,8 @@ package validate
 import (
 	"context"
 
-	"github.com/carmel/microservices/errors"
-	"github.com/carmel/microservices/midware"
+	"github.com/carmel/go-micro/errors"
+	"github.com/carmel/go-micro/midware"
 )
 
 type validator interface {

@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/microservices/registry"
-	"github.com/carmel/microservices/selector"
+	"github.com/carmel/go-micro/registry"
+	"github.com/carmel/go-micro/selector"
 )
 
 func TestParseTarget(t *testing.T) {

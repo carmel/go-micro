@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/consul/api"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 func tcpServer(lis net.Listener) {

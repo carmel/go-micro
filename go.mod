@@ -1,8 +1,10 @@
-module github.com/carmel/microservices
+module github.com/carmel/go-micro
 
 go 1.21
 
 require (
+	github.com/carmel/microservices v0.0.0-20231005145229-39d8b90404f2
+	github.com/envoyproxy/protoc-gen-validate v1.0.2
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/go-resty/resty/v2 v2.9.1
 	github.com/pkg/errors v0.9.1

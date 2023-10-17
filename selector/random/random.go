@@ -4,8 +4,8 @@ import (
 	"context"
 	"math/rand"
 
-	"github.com/carmel/microservices/selector"
-	"github.com/carmel/microservices/selector/node/direct"
+	"github.com/carmel/go-micro/selector"
+	"github.com/carmel/go-micro/selector/node/direct"
 )
 
 const (

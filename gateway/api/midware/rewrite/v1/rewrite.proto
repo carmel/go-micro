@@ -1,6 +1,6 @@
 syntax = "proto3";
 package gateway.midware.rewrite.v1;
-option go_package =  "github.com/carmel/microservices/gateway/api/midware/rewrite/v1";
+option go_package =  "github.com/carmel/go-micro/gateway/api/midware/rewrite/v1";
 
 // Rewrite midware config.
 message HeadersPolicy {

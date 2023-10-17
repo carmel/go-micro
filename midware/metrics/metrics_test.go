@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/carmel/microservices/metrics"
-	"github.com/carmel/microservices/transport"
-	"github.com/carmel/microservices/transport/http"
+	"github.com/carmel/go-micro/metrics"
+	"github.com/carmel/go-micro/transport"
+	"github.com/carmel/go-micro/transport/http"
 )
 
 type (

@@ -9,8 +9,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/carmel/microservices/midware"
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/midware"
+	"github.com/carmel/go-micro/registry"
 )
 
 func TestWithEndpoint(t *testing.T) {

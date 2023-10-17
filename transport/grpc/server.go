@@ -14,13 +14,13 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
-	// apimd "github.com/carmel/microservices/api/metadata"
-	"github.com/carmel/microservices/endpoint"
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/midware"
-	"github.com/carmel/microservices/pkg/host"
-	"github.com/carmel/microservices/pkg/matcher"
-	"github.com/carmel/microservices/transport"
+	// apimd "github.com/carmel/go-micro/api/metadata"
+	"github.com/carmel/go-micro/endpoint"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/midware"
+	"github.com/carmel/go-micro/pkg/host"
+	"github.com/carmel/go-micro/pkg/matcher"
+	"github.com/carmel/go-micro/transport"
 )
 
 var (

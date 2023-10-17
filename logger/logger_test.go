@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/carmel/microservices/tool"
+	"github.com/carmel/go-micro/tool"
 )
 
 type midware struct {

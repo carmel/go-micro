@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/carmel/microservices/logger"
+	"github.com/carmel/go-micro/logger"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )

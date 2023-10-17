@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/carmel/microservices/pkg/ratelimit"
+	"github.com/carmel/go-micro/pkg/ratelimit"
 )
 
 type (

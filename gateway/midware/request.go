@@ -3,8 +3,8 @@ package midware
 import (
 	"context"
 
-	config "github.com/carmel/microservices/gateway/api/config/v1"
-	"github.com/carmel/microservices/selector"
+	config "github.com/carmel/go-micro/gateway/api/config/v1"
+	"github.com/carmel/go-micro/selector"
 )
 
 type contextKey struct{}

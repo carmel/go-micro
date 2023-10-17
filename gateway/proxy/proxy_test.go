@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	config "github.com/carmel/microservices/gateway/api/config/v1"
-	"github.com/carmel/microservices/gateway/client"
-	"github.com/carmel/microservices/gateway/midware"
-	"github.com/carmel/microservices/gateway/midware/logging"
+	config "github.com/carmel/go-micro/gateway/api/config/v1"
+	"github.com/carmel/go-micro/gateway/client"
+	"github.com/carmel/go-micro/gateway/midware"
+	"github.com/carmel/go-micro/gateway/midware/logging"
 )
 
 type responseWriter struct {

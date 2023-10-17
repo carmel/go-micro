@@ -1,4 +1,4 @@
-package microservices
+package micro
 
 import (
 	"context"
@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/registry"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/registry"
+	"github.com/carmel/go-micro/transport"
 )
 
 // Option is an application option.

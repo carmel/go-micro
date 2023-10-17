@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/microservices/pkg/host"
+	"github.com/carmel/go-micro/pkg/host"
 )
 
 const appJSONStr = "application/json"

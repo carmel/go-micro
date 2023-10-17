@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/carmel/microservices/codec/form"
+	"github.com/carmel/go-micro/codec/form"
 )
 
 var reg = regexp.MustCompile(`{[\\.\w]+}`)

@@ -5,9 +5,9 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/carmel/microservices/errors"
-	"github.com/carmel/microservices/logger"
-	"github.com/carmel/microservices/midware"
+	"github.com/carmel/go-micro/errors"
+	"github.com/carmel/go-micro/logger"
+	"github.com/carmel/go-micro/midware"
 )
 
 // Latency is recovery latency context key

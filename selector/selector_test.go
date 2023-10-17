@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 var errNodeNotMatch = errors.New("node is not match")

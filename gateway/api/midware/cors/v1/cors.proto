@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package gateway.midware.cors.v1;
 
-option go_package = "github.com/carmel/microservices/gateway/api/midware/cors/v1";
+option go_package = "github.com/carmel/go-micro/gateway/api/midware/cors/v1";
 
 import "google/protobuf/duration.proto";
 

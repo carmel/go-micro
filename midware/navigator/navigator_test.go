@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/carmel/microservices/midware"
-	"github.com/carmel/microservices/transport"
+	"github.com/carmel/go-micro/midware"
+	"github.com/carmel/go-micro/transport"
 )
 
 var _ transport.Transporter = (*Transport)(nil)

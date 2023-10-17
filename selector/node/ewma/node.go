@@ -9,8 +9,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/carmel/microservices/errors"
-	"github.com/carmel/microservices/selector"
+	"github.com/carmel/go-micro/errors"
+	"github.com/carmel/go-micro/selector"
 )
 
 const (

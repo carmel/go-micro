@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 func filterInstancesByZone(ins *disInstancesInfo, zone string) []*registry.ServiceInstance {

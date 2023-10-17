@@ -3,7 +3,7 @@ package selector
 import (
 	"strconv"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 var _ Node = (*DefaultNode)(nil)

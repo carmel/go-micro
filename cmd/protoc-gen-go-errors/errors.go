@@ -11,11 +11,11 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/carmel/microservices/cmd/protoc-gen-go-errors/errors"
+	"github.com/carmel/go-micro/cmd/protoc-gen-go-errors/errors"
 )
 
 const (
-	errorsPackage = protogen.GoImportPath("github.com/carmel/microservices/errors")
+	errorsPackage = protogen.GoImportPath("github.com/carmel/go-micro/errors")
 	fmtPackage    = protogen.GoImportPath("fmt")
 )
 

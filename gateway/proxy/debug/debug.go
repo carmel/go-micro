@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/carmel/microservices/logger"
+	"github.com/carmel/go-micro/logger"
 	"github.com/gorilla/mux"
 )
 

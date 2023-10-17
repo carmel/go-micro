@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/resolver"
 
-	"github.com/carmel/microservices/registry"
+	"github.com/carmel/go-micro/registry"
 )
 
 const name = "discovery"
