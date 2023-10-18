@@ -1,4 +1,4 @@
-package tool
+package util
 
 import (
 	"bytes"
@@ -7,8 +7,8 @@ import (
 	"image/jpeg"
 	"io"
 	"net"
-	"path/filepath"
 
+	// "io/ioutil"
 	"log"
 	"math/rand"
 	"mime/multipart"
@@ -21,9 +21,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/carmel/go-micro/constant"
 	"github.com/google/uuid"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/nfnt/resize"
+	"github.com/vmihailenco/msgpack"
 )
 
 var (
@@ -50,11 +52,28 @@ func DecodeByte(b []byte, data interface{}) error {
 	return json.Unmarshal(b, data)
 }
 
-func UUID() string {
-	return strings.Replace(uuid.NewString(), "-", "", -1)
+func StringUUID() string {
+
+	return strings.ReplaceAll(uuid.New().String(), "-", "")
+
+}
+
+func IntUUID() uint32 {
+	return uuid.New().ID()
+
 }
 
 func InArray(val string, array []string) bool {
+	for i := 0; i < len(array); i++ {
+		// if strings.HasPrefix(val, array[i]) {
+		if val == array[i] {
+			return true
+		}
+	}
+	return false
+}
+
+func PrefixInArray(val string, array []string) bool {
 	for i := 0; i < len(array); i++ {
 		if strings.HasPrefix(val, array[i]) {
 			return true
@@ -79,6 +98,18 @@ func FindIntIndex(slice []int64, val int64) int {
 		}
 	}
 	return -1
+}
+
+// RandomStr 获得随机字符串
+func RandomStr(l int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyz"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < l; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	return string(result)
 }
 
 func RemoveIndex(s []string, index int) []string {
@@ -163,7 +194,7 @@ func OpenFile(name, sep string) *os.File {
 	return f
 }
 
-func ToCamelCase(str string) (result string) {
+func ToCamel(str string) (result string) {
 	rn := []rune(str)
 
 	if rn[0] >= 97 && rn[0] <= 122 {
@@ -182,7 +213,7 @@ func ToCamelCase(str string) (result string) {
 }
 
 // 驼峰式变下划线式
-func AntiCamelCase(str string) (result string) {
+func ToSnake(str string) (result string) {
 	rn := []rune(str)
 
 	if rn[0] >= 65 && rn[0] <= 90 {
@@ -200,7 +231,7 @@ func AntiCamelCase(str string) (result string) {
 	return
 }
 
-// start>0时从串首开始截取start~n，start<0时从串尾开始截取|head|~n
+// start>0时从串首开始截取n位，start<0时从串尾倒数|start|开始截取n位
 func Substr(s string, start int, n int) string {
 	rs := []rune(s)
 	sn := len(rs)
@@ -275,7 +306,7 @@ func MillisecondToDateString(ms int64) string {
 }
 
 func MillisecondToDateHMS(ms int64) string {
-	return time.Unix(ms, 0).Format(FORMAT_ISO8601_DATE_TIME)
+	return time.Unix(ms, 0).Format(constant.FORMAT_ISO8601_DATE_TIME)
 }
 
 // func ListMap(rows *orm.Rows, call func(map[string]interface{}) (string, string)) (result []map[string]interface{}) {
@@ -299,7 +330,7 @@ func MillisecondToDateHMS(ms int64) string {
 
 // 获取传入的时间所在月份的第一天，即某月第一天的0点。如传入time.Now(), 返回当前月份的第一天0点时间。
 func GetFirstDateOfMonth(t string) (int64, error) {
-	if tm, err := time.ParseInLocation(FORMAT_ISO8601_DATE_TIME, t, Loc); err != nil {
+	if tm, err := time.ParseInLocation(constant.FORMAT_ISO8601_DATE_TIME, t, Loc); err != nil {
 		return 0, nil
 	} else {
 		tm = tm.AddDate(0, 0, -tm.Day()+1)
@@ -309,11 +340,11 @@ func GetFirstDateOfMonth(t string) (int64, error) {
 
 // 获取传入的时间所在月份的第一天凌晨与最后一天23点59分59秒
 func GetFirstAndLastDateOfMonth(t string) (int64, int64, error) {
-	if tm, err := time.ParseInLocation(FORMAT_ISO8601_DATE_TIME, t, Loc); err != nil {
+	if tm, err := time.ParseInLocation(constant.FORMAT_ISO8601_DATE_TIME, t, Loc); err != nil {
 		return 0, 0, nil
 	} else {
 		tm = tm.AddDate(0, 0, -tm.Day()+1)
-		return GetZeroTime(tm).Unix(), DAY_TS_DIFF + GetZeroTime(tm).AddDate(0, 1, -1).Unix(), nil
+		return GetZeroTime(tm).Unix(), constant.DAY_TS_DIFF + GetZeroTime(tm).AddDate(0, 1, -1).Unix(), nil
 	}
 }
 
@@ -330,7 +361,7 @@ func GetZeroTSByTS(ms int64) int64 {
 
 func GetMonthEndTSByTS(ms int64) int64 {
 	dt := time.Unix(ms, 0)
-	return dt.AddDate(0, 1, -1).Unix() + DAY_TS_DIFF
+	return dt.AddDate(0, 1, -1).Unix() + constant.DAY_TS_DIFF
 }
 
 func GetZeroTS() int64 {
@@ -339,9 +370,9 @@ func GetZeroTS() int64 {
 }
 
 func GetTS(t string) (int64, int64) {
-	ts, _ := time.ParseInLocation(FORMAT_ISO8601_DATE_TIME, t+" 00:00:00", Loc)
+	ts, _ := time.ParseInLocation(constant.FORMAT_ISO8601_DATE_TIME, t+" 00:00:00", Loc)
 	min := ts.Unix()
-	return min, min + DAY_TS_DIFF
+	return min, min + constant.DAY_TS_DIFF
 }
 
 func GetDiffTS(diff int) (int64, int64) {
@@ -521,18 +552,6 @@ func SortRange(m map[string]interface{}, f func(int, string)) {
 	}
 }
 
-// RandomStr 获得随机字符串
-func RandomStr(l int) string {
-	str := "0123456789abcdefghijklmnopqrstuvwxyz"
-	bytes := []byte(str)
-	result := []byte{}
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for i := 0; i < l; i++ {
-		result = append(result, bytes[r.Intn(len(bytes))])
-	}
-	return string(result)
-}
-
 func HasField(st reflect.Value, name string) bool {
 
 	if s := st.FieldByNameFunc(func(n string) bool { return strings.EqualFold(n, name) }); s.IsValid() {
@@ -586,11 +605,6 @@ func CopyMap(m map[string]interface{}) map[string]interface{} {
 	return cp
 }
 
-func GetBaseName(fileName string) string {
-	fileName = filepath.Base(fileName)
-	return fileName[:len(fileName)-len(filepath.Ext(fileName))]
-}
-
 // key: tag中的键值，delimiter: tag中的分隔符，structs：要生成表的结构体
 func StructToTable(key, delimiter string, toCamel bool, structs ...interface{}) {
 	var sb strings.Builder
@@ -607,7 +621,7 @@ func StructToTable(key, delimiter string, toCamel bool, structs ...interface{}) 
 			attrs = nil
 			if tag := string(s.Field(i).Tag.Get(key)); tag == "" {
 				if toCamel {
-					fieldName = AntiCamelCase(s.Field(i).Name)
+					fieldName = ToCamel(s.Field(i).Name)
 				} else {
 					fieldName = s.Field(i).Name
 				}
@@ -677,4 +691,21 @@ func Min(first int, args ...int) int {
 		}
 	}
 	return first
+}
+
+func AnyToBytes(v interface{}) ([]byte, error) {
+	return msgpack.Marshal(v)
+}
+
+// 返回 interface{} 该为某个结构体的指针类型
+// func bytesToAny(val []byte, data interface{}) (err error) {
+// 	buf := new(bytes.Buffer)
+// 	dec := gob.NewDecoder(buf)
+// 	err = dec.Decode(data)
+// 	return
+// }
+
+func BytesToAny[T any](val []byte) (data T, err error) {
+	err = msgpack.Unmarshal(val, &data)
+	return
 }

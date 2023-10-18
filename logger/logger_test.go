@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/carmel/go-micro/tool"
+	"github.com/carmel/go-micro/util"
 )
 
 type midware struct {
@@ -40,7 +40,7 @@ func BenchmarkZap(b *testing.B) {
 		logger,
 	}
 
-	wp := tool.NewPool(10, &sync.WaitGroup{})
+	wp := util.NewPool(10, &sync.WaitGroup{})
 
 	b.StartTimer()
 

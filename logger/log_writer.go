@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/carmel/go-micro/tool"
+	"github.com/carmel/go-micro/util"
 )
 
 type LogWriter struct {
@@ -59,7 +59,7 @@ func NewLogWriter(opts Options) (*LogWriter, error) {
 
 func (w *LogWriter) gzName() string {
 	// return fmt.Sprintf("%s/%s-%s-%s.gz", w.dir, w.fn, time.Now().UTC().Format("2006-01-02T15-04-05.000"), util.RandomStr(3))
-	return fmt.Sprintf("%s%c%s-%s.log.gz", w.dir, filepath.Separator, time.Now().UTC().Format(time.RFC3339), tool.RandomStr(3))
+	return fmt.Sprintf("%s%c%s-%s.log.gz", w.dir, filepath.Separator, time.Now().UTC().Format(time.RFC3339), util.RandomStr(3))
 }
 
 // Write implements io.Writer.
