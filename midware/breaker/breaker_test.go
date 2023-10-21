@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	mserrors "github.com/carmel/go-micro/errors"
-	"github.com/carmel/go-micro/pkg/group"
-	"github.com/carmel/go-micro/transport"
+	mserrors "go-micro/errors"
+	"go-micro/pkg/group"
+	"go-micro/transport"
 )
 
 type transportMock struct {

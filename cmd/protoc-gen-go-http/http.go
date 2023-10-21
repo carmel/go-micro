@@ -17,8 +17,8 @@ import (
 
 const (
 	contextPackage       = protogen.GoImportPath("context")
-	transportHTTPPackage = protogen.GoImportPath("github.com/carmel/go-micro/transport/http")
-	bindingPackage       = protogen.GoImportPath("github.com/carmel/go-micro/transport/http/binding")
+	transportHTTPPackage = protogen.GoImportPath("go-micro/transport/http")
+	bindingPackage       = protogen.GoImportPath("go-micro/transport/http/binding")
 )
 
 var methodSets = make(map[string]int)

@@ -17,15 +17,16 @@ import (
 	"sync/atomic"
 	"time"
 
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
-	"github.com/carmel/go-micro/gateway/client"
-	"github.com/carmel/go-micro/gateway/midware"
-	"github.com/carmel/go-micro/gateway/router"
-	"github.com/carmel/go-micro/gateway/router/mux"
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/pkg/breaker/sre"
-	"github.com/carmel/go-micro/selector"
-	"github.com/carmel/go-micro/transport/http/status"
+	config "go-micro/gateway/api/config/v1"
+	"go-micro/gateway/client"
+	"go-micro/gateway/midware"
+	"go-micro/gateway/router"
+	"go-micro/gateway/router/mux"
+	"go-micro/logger"
+	"go-micro/pkg/breaker/sre"
+	"go-micro/selector"
+	"go-micro/transport/http/status"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
 

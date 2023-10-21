@@ -3,7 +3,7 @@ package prometheus
 import (
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/carmel/go-micro/metrics"
+	"go-micro/metrics"
 )
 
 var _ metrics.Observer = (*summary)(nil)

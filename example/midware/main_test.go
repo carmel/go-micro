@@ -7,21 +7,22 @@ import (
 	"testing"
 	"time"
 
-	ms "github.com/carmel/go-micro"
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/logger"
-	prom "github.com/carmel/go-micro/metrics/prometheus"
-	"github.com/carmel/go-micro/midware/auth/jwt"
-	"github.com/carmel/go-micro/midware/breaker"
-	"github.com/carmel/go-micro/midware/logging"
-	"github.com/carmel/go-micro/midware/metrics"
-	"github.com/carmel/go-micro/midware/navigator"
-	"github.com/carmel/go-micro/midware/ratelimit"
-	"github.com/carmel/go-micro/midware/recovery"
-	"github.com/carmel/go-micro/midware/validate"
-	"github.com/carmel/go-micro/registry/etcd"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	ms "go-micro"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/logger"
+	prom "go-micro/metrics/prometheus"
+	"go-micro/midware/auth/jwt"
+	"go-micro/midware/breaker"
+	"go-micro/midware/logging"
+	"go-micro/midware/metrics"
+	"go-micro/midware/navigator"
+	"go-micro/midware/ratelimit"
+	"go-micro/midware/recovery"
+	"go-micro/midware/validate"
+	"go-micro/registry/etcd"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
+
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/handlers"
 	"github.com/prometheus/client_golang/prometheus"
@@ -85,7 +86,7 @@ func NewWhiteListMatcher() navigator.MatchFunc {
 
 func TestServer(t *testing.T) {
 
-	slog := logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
+	slog, _ := logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
 
 	grpcSrv := grpc.NewServer(
 		grpc.Address(":9000"),

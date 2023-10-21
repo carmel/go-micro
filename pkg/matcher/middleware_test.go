@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/carmel/go-micro/midware"
+	"go-micro/midware"
 )
 
 func logging(module string) midware.Midware {

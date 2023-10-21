@@ -9,12 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/carmel/go-micro/selector"
+	"go-micro/selector"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"golang.org/x/net/http2"
 
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
-	"github.com/carmel/go-micro/gateway/midware"
+	config "go-micro/gateway/api/config/v1"
+	"go-micro/gateway/midware"
 )
 
 var _ selector.Node = &node{}

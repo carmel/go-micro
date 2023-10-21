@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/midware"
+	"go-micro/transport"
 )
 
 type (

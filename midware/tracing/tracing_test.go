@@ -10,8 +10,8 @@ import (
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/logger"
+	"go-micro/transport"
 )
 
 var _ transport.Transporter = (*mockTransport)(nil)
@@ -118,7 +118,7 @@ func TestServer(t *testing.T) {
 		WithTracerProvider(tracesdk.NewTracerProvider()),
 	)
 	var log logger.Logger
-	log = logger.NewSlogger(logger.Options{})
+	log, _ = logger.NewSlogger(logger.Options{})
 	log = log.With("span_id", SpanID(), "trace_id", TraceID(), "kind", "server")
 
 	var (
@@ -190,7 +190,7 @@ func TestClient(t *testing.T) {
 	)
 
 	var log logger.Logger
-	log = logger.NewSlogger(logger.Options{})
+	log, _ = logger.NewSlogger(logger.Options{})
 	log = log.With("span_id", SpanID(), "trace_id", TraceID(), "kind", "client")
 
 	var (

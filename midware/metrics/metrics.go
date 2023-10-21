@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/carmel/go-micro/errors"
-	"github.com/carmel/go-micro/metrics"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/errors"
+	"go-micro/metrics"
+	"go-micro/midware"
+	"go-micro/transport"
 )
 
 // Option is metrics option.

@@ -15,11 +15,11 @@ func (l Level) Level() slog.Level {
 	return slog.Level(l * 4)
 }
 
-func NewSlogger(opt Options) Slogger {
+func NewSlogger(opt Options) (*Slogger, error) {
 	hostname, _ := os.Hostname()
 	if opt.LogLevel == DEBUG {
 
-		return Slogger{
+		return &Slogger{
 			slog.New(
 				slog.NewTextHandler(
 					os.Stdout,
@@ -36,12 +36,17 @@ func NewSlogger(opt Options) Slogger {
 					),
 				}),
 			),
-		}
+		}, nil
 	} else {
-		return Slogger{
+		logWriter, err := NewLogWriter(opt)
+		if err != nil {
+			return nil, fmt.Errorf("new LogWriter failed: %s", err)
+		}
+		return &Slogger{
 			slog.New(
 				slog.NewJSONHandler(
-					os.Stdout,
+					// os.Stdout,
+					logWriter,
 					&slog.HandlerOptions{
 						AddSource:   true,
 						Level:       opt.LogLevel,
@@ -55,7 +60,7 @@ func NewSlogger(opt Options) Slogger {
 					),
 				}),
 			),
-		}
+		}, nil
 	}
 }
 

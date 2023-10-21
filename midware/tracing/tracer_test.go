@@ -7,7 +7,7 @@ import (
 
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/carmel/go-micro/example/testdata/binding"
+	"go-micro/example/testdata/binding"
 )
 
 func TestNewTracer(t *testing.T) {

@@ -1,7 +1,8 @@
 package prometheus
 
 import (
-	"github.com/carmel/go-micro/metrics"
+	"go-micro/metrics"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
 

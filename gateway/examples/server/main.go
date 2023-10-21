@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"log"
 
-	ms "github.com/carmel/go-micro"
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/midware/recovery"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	ms "go-micro"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/midware/recovery"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
 )
 
 var (

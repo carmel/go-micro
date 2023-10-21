@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/go-micro/config"
+	"go-micro/config"
 )
 
 const (

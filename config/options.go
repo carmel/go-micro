@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	cc "github.com/carmel/go-micro/codec"
+	cc "go-micro/codec"
 )
 
 // Decoder is config decoder.

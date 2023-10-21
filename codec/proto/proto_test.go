@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	testData "github.com/carmel/go-micro/example/testdata/codec"
+	testData "go-micro/example/testdata/codec"
 )
 
 func TestName(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 
 	"google.golang.org/grpc/metadata"
 
-	"github.com/carmel/go-micro/selector"
+	"go-micro/selector"
 )
 
 func TestTrailer(t *testing.T) {

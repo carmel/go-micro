@@ -9,8 +9,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/registry"
+	"go-micro/logger"
+	"go-micro/registry"
 )
 
 func (d *Discovery) Register(ctx context.Context, service *registry.ServiceInstance) (err error) {

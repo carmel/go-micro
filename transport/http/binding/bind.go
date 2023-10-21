@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/carmel/go-micro/codec"
-	"github.com/carmel/go-micro/codec/form"
-	"github.com/carmel/go-micro/errors"
+	"go-micro/codec"
+	"go-micro/codec/form"
+	"go-micro/errors"
 )
 
 // BindQuery bind vars parameters to target.

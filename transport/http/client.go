@@ -9,15 +9,15 @@ import (
 	"net/http"
 	"time"
 
-	cc "github.com/carmel/go-micro/codec"
-	"github.com/carmel/go-micro/errors"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/pkg/host"
-	"github.com/carmel/go-micro/pkg/httputil"
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
-	"github.com/carmel/go-micro/selector/wrr"
-	"github.com/carmel/go-micro/transport"
+	cc "go-micro/codec"
+	"go-micro/errors"
+	"go-micro/midware"
+	"go-micro/pkg/host"
+	"go-micro/pkg/httputil"
+	"go-micro/registry"
+	"go-micro/selector"
+	"go-micro/selector/wrr"
+	"go-micro/transport"
 )
 
 func init() {

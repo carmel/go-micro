@@ -6,8 +6,8 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/midware"
+	"go-micro/transport"
 )
 
 // Option is tracing option.

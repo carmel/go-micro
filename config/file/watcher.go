@@ -7,7 +7,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
-	"github.com/carmel/go-micro/config"
+	"go-micro/config"
 )
 
 var _ config.Watcher = (*watcher)(nil)

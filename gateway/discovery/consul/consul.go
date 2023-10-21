@@ -3,9 +3,10 @@ package consul
 import (
 	"net/url"
 
-	"github.com/carmel/go-micro/gateway/discovery"
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/registry/consul"
+	"go-micro/gateway/discovery"
+	"go-micro/registry"
+	"go-micro/registry/consul"
+
 	"github.com/hashicorp/consul/api"
 )
 

@@ -6,9 +6,9 @@ import (
 	"google.golang.org/grpc"
 	grpcmd "google.golang.org/grpc/metadata"
 
-	"github.com/carmel/go-micro/midware"
-	ic "github.com/carmel/go-micro/pkg/context"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/midware"
+	ic "go-micro/pkg/context"
+	"go-micro/transport"
 )
 
 // unaryServerInterceptor is a gRPC unary server interceptor

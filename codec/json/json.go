@@ -7,7 +7,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	cc "github.com/carmel/go-micro/codec"
+	cc "go-micro/codec"
 )
 
 // Name is the name registered for the json codec.

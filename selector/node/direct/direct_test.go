@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
+	"go-micro/registry"
+	"go-micro/selector"
 )
 
 func TestDirect(t *testing.T) {

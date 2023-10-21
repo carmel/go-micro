@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/carmel/go-micro/errors"
+	"go-micro/errors"
 )
 
 func TestOnce(t *testing.T) {

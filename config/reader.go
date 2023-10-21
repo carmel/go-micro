@@ -8,8 +8,9 @@ import (
 	"strings"
 	"sync"
 
+	"go-micro/logger"
+
 	"dario.cat/mergo"
-	"github.com/carmel/go-micro/logger"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

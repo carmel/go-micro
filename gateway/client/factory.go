@@ -7,12 +7,12 @@ import (
 	"strings"
 	"sync/atomic"
 
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
+	config "go-micro/gateway/api/config/v1"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
-	"github.com/carmel/go-micro/selector/p2c"
+	"go-micro/logger"
+	"go-micro/registry"
+	"go-micro/selector"
+	"go-micro/selector/p2c"
 )
 
 // Factory is returns service client.

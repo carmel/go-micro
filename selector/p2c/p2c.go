@@ -7,8 +7,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/carmel/go-micro/selector"
-	"github.com/carmel/go-micro/selector/node/ewma"
+	"go-micro/selector"
+	"go-micro/selector/node/ewma"
 )
 
 const (

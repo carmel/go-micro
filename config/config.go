@@ -8,11 +8,11 @@ import (
 	"time"
 
 	// init encoding
-	_ "github.com/carmel/go-micro/codec/json"
-	_ "github.com/carmel/go-micro/codec/proto"
-	_ "github.com/carmel/go-micro/codec/xml"
-	_ "github.com/carmel/go-micro/codec/yaml"
-	"github.com/carmel/go-micro/logger"
+	_ "go-micro/codec/json"
+	_ "go-micro/codec/proto"
+	_ "go-micro/codec/xml"
+	_ "go-micro/codec/yaml"
+	"go-micro/logger"
 )
 
 var _ Config = (*config)(nil)

@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
+	"go-micro/registry"
+	"go-micro/selector"
 )
 
 func TestVersion(t *testing.T) {

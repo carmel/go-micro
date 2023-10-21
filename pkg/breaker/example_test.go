@@ -3,7 +3,7 @@ package breaker_test
 import (
 	"fmt"
 
-	"github.com/carmel/go-micro/pkg/breaker/sre"
+	"go-micro/pkg/breaker/sre"
 )
 
 // This is a example of using a circuit breaker Do() when return nil.

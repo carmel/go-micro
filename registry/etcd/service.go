@@ -3,7 +3,7 @@ package etcd
 import (
 	"encoding/json"
 
-	"github.com/carmel/go-micro/registry"
+	"go-micro/registry"
 )
 
 func marshal(si *registry.ServiceInstance) (string, error) {

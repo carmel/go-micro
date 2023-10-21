@@ -21,7 +21,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/carmel/go-micro/constant"
+	"go-micro/constant"
+
 	"github.com/google/uuid"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/nfnt/resize"

@@ -9,9 +9,10 @@ import (
 	"strings"
 	"time"
 
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
-	v1 "github.com/carmel/go-micro/gateway/api/midware/cors/v1"
-	"github.com/carmel/go-micro/gateway/midware"
+	config "go-micro/gateway/api/config/v1"
+	v1 "go-micro/gateway/api/midware/cors/v1"
+	"go-micro/gateway/midware"
+
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"

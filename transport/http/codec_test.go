@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/carmel/go-micro/errors"
+	"go-micro/errors"
 )
 
 func TestDefaultRequestDecoder(t *testing.T) {

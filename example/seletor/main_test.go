@@ -6,13 +6,14 @@ import (
 	"testing"
 	"time"
 
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/midware/recovery"
-	"github.com/carmel/go-micro/registry/etcd"
-	"github.com/carmel/go-micro/selector/filter"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/logger"
+	"go-micro/midware/recovery"
+	"go-micro/registry/etcd"
+	"go-micro/selector/filter"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
+
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
@@ -25,7 +26,7 @@ func TestServer(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	slog := logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
+	slog, _ := logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
 
 	go runServer("1.0", slog, client, 8000)
 	go runServer("1.0", slog, client, 8010)

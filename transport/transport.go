@@ -5,11 +5,11 @@ import (
 	"net/url"
 
 	// init encoding
-	_ "github.com/carmel/go-micro/codec/form"
-	_ "github.com/carmel/go-micro/codec/json"
-	_ "github.com/carmel/go-micro/codec/proto"
-	_ "github.com/carmel/go-micro/codec/xml"
-	_ "github.com/carmel/go-micro/codec/yaml"
+	_ "go-micro/codec/form"
+	_ "go-micro/codec/json"
+	_ "go-micro/codec/proto"
+	_ "go-micro/codec/xml"
+	_ "go-micro/codec/yaml"
 )
 
 // Server is transport server.

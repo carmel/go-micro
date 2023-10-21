@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/carmel/go-micro/util"
+	"go-micro/util"
 )
 
 type LogWriter struct {
@@ -47,6 +47,7 @@ func NewLogWriter(opts Options) (*LogWriter, error) {
 		file: f,
 		// bw:   bufio.NewWriter(f),
 		dir: dir,
+		ts:  time.Now(),
 	}
 
 	// w.bw.WriteString("\n")
@@ -69,12 +70,13 @@ func (l *LogWriter) Write(p []byte) (n int, err error) {
 
 	writeLen := int64(len(p))
 	if l.opts.MaxSize != 0 {
-		if l.opts.MaxSize < writeLen {
+		maxSize := l.opts.MaxSize * 1024 * 1024
+		if maxSize < writeLen {
 			err = fmt.Errorf("write length %d exceeds maximum file size %d", writeLen, l.opts.MaxSize)
 			return
 		}
 
-		if l.size+writeLen > l.opts.MaxSize {
+		if l.size+writeLen > maxSize {
 			// 压缩存档
 			err = l.archive()
 			if err != nil {
@@ -84,7 +86,7 @@ func (l *LogWriter) Write(p []byte) (n int, err error) {
 		}
 	}
 
-	if l.opts.MaxAge != 0 && time.Now().After(l.ts.Add(l.opts.MaxAge)) {
+	if l.opts.MaxAge != 0 && time.Now().After(l.ts.Add(l.opts.MaxAge*time.Hour*24)) {
 		// 压缩存档
 		err = l.archive()
 		if err != nil {

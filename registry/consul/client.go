@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/registry"
+	"go-micro/logger"
+	"go-micro/registry"
 
 	"github.com/hashicorp/consul/api"
 )

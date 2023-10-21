@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/carmel/go-micro/metadata"
-	"github.com/carmel/go-micro/transport"
-	"github.com/carmel/go-micro/transport/http"
+	"go-micro/metadata"
+	"go-micro/transport"
+	"go-micro/transport/http"
 
 	"go.opentelemetry.io/otel/attribute"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"

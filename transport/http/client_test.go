@@ -15,10 +15,10 @@ import (
 	"testing"
 	"time"
 
-	kratoserrors "github.com/carmel/go-micro/errors"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
+	kratoserrors "go-micro/errors"
+	"go-micro/midware"
+	"go-micro/registry"
+	"go-micro/selector"
 )
 
 type mockRoundTripper struct{}

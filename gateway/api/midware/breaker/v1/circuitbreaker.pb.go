@@ -7,7 +7,7 @@
 package v1
 
 import (
-	v1 "github.com/carmel/go-micro/gateway/api/config/v1"
+	v1 "go-micro/gateway/api/config/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"

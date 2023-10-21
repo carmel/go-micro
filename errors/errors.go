@@ -7,7 +7,7 @@ import (
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/status"
 
-	httpstatus "github.com/carmel/go-micro/transport/http/status"
+	httpstatus "go-micro/transport/http/status"
 )
 
 const (

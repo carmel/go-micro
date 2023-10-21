@@ -8,7 +8,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	"github.com/carmel/go-micro/example/testdata/complex"
+	"go-micro/example/testdata/complex"
 )
 
 func TestEncodeValues(t *testing.T) {

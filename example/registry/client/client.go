@@ -5,10 +5,11 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/registry/etcd"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/registry/etcd"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
+
 	clientv3 "go.etcd.io/etcd/client/v3"
 	srcgrpc "google.golang.org/grpc"
 )

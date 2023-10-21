@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
-	"github.com/carmel/go-micro/selector/filter"
+	"go-micro/registry"
+	"go-micro/selector"
+	"go-micro/selector/filter"
 )
 
 func TestWrr(t *testing.T) {

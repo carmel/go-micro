@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/carmel/go-micro/errors"
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/errors"
+	"go-micro/logger"
+	"go-micro/midware"
+	"go-micro/transport"
 )
 
 // Redacter defines how to log an object

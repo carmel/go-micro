@@ -1,6 +1,6 @@
 package subset
 
-import "github.com/carmel/go-micro/pkg/consistent"
+import "go-micro/pkg/consistent"
 
 func Subset[M consistent.Member](selectKey string, inss []M, num int) []M {
 	if len(inss) <= num {

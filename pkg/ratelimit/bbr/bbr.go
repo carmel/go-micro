@@ -6,9 +6,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/carmel/go-micro/pkg/cpu"
-	"github.com/carmel/go-micro/pkg/ratelimit"
-	"github.com/carmel/go-micro/pkg/window"
+	"go-micro/pkg/cpu"
+	"go-micro/pkg/ratelimit"
+	"go-micro/pkg/window"
 )
 
 var (

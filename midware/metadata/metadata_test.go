@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/carmel/go-micro/metadata"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/metadata"
+	"go-micro/transport"
 )
 
 type headerCarrier http.Header

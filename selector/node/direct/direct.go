@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/carmel/go-micro/selector"
+	"go-micro/selector"
 )
 
 const (

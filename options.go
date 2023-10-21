@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/logger"
+	"go-micro/registry"
+	"go-micro/transport"
 )
 
 // Option is an application option.

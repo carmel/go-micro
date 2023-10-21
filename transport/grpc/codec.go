@@ -6,8 +6,8 @@ import (
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/protobuf/proto"
 
-	enc "github.com/carmel/go-micro/codec"
-	"github.com/carmel/go-micro/codec/json"
+	enc "go-micro/codec"
+	"go-micro/codec/json"
 )
 
 func init() {

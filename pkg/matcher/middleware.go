@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/carmel/go-micro/midware"
+	"go-micro/midware"
 )
 
 // Matcher is a midware matcher.

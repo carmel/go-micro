@@ -3,7 +3,7 @@ package selector
 import (
 	"context"
 
-	"github.com/carmel/go-micro/errors"
+	"go-micro/errors"
 )
 
 // ErrNoAvailable is no available node.

@@ -9,7 +9,7 @@ import (
 
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	"github.com/carmel/go-micro/example/testdata/complex"
+	"go-micro/example/testdata/complex"
 )
 
 func TestDecodeValues(t *testing.T) {

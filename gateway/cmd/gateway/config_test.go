@@ -3,13 +3,14 @@ package main
 import (
 	"testing"
 
-	"github.com/carmel/go-micro/config"
-	"github.com/carmel/go-micro/config/file"
-	configv1 "github.com/carmel/go-micro/gateway/api/config/v1"
-	circuitbreakerv1 "github.com/carmel/go-micro/gateway/api/midware/breaker/v1"
-	corsv1 "github.com/carmel/go-micro/gateway/api/midware/cors/v1"
-	rewritev1 "github.com/carmel/go-micro/gateway/api/midware/rewrite/v1"
-	tracingv1 "github.com/carmel/go-micro/gateway/api/midware/tracing/v1"
+	"go-micro/config"
+	"go-micro/config/file"
+	configv1 "go-micro/gateway/api/config/v1"
+	circuitbreakerv1 "go-micro/gateway/api/midware/breaker/v1"
+	corsv1 "go-micro/gateway/api/midware/cors/v1"
+	rewritev1 "go-micro/gateway/api/midware/rewrite/v1"
+	tracingv1 "go-micro/gateway/api/midware/tracing/v1"
+
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"

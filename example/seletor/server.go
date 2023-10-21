@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"log"
 
-	ms "github.com/carmel/go-micro"
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/midware/logging"
-	"github.com/carmel/go-micro/midware/recovery"
-	"github.com/carmel/go-micro/registry/etcd"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	ms "go-micro"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/logger"
+	"go-micro/midware/logging"
+	"go-micro/midware/recovery"
+	"go-micro/registry/etcd"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
+
 	etcdclient "go.etcd.io/etcd/client/v3"
 )
 
@@ -32,10 +33,14 @@ func main() {
 		Endpoints: []string{"127.0.0.1:2379"},
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("[selector] new etcd client failed: %s", err)
 	}
 
-	slog := logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
+	var slog logger.Logger
+	slog, err = logger.NewSlogger(logger.Options{LogPath: "log/ms.log"})
+	if err != nil {
+		log.Fatalf("[selector] new slogger failed: %s", err)
+	}
 
 	go runServer("1.0", slog, client, 8000)
 	go runServer("1.0", slog, client, 8010)

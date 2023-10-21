@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/carmel/go-micro/config"
+	"go-micro/config"
 )
 
 type env struct {

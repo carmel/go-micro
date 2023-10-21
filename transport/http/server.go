@@ -11,12 +11,12 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/carmel/go-micro/endpoint"
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/pkg/host"
-	"github.com/carmel/go-micro/pkg/matcher"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/endpoint"
+	"go-micro/logger"
+	"go-micro/midware"
+	"go-micro/pkg/host"
+	"go-micro/pkg/matcher"
+	"go-micro/transport"
 )
 
 var (

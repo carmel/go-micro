@@ -6,7 +6,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/carmel/go-micro/logger"
+	"go-micro/logger"
+
 	"github.com/gorilla/mux"
 )
 

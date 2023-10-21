@@ -9,8 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
-	"github.com/carmel/go-micro/gateway/midware"
+	config "go-micro/gateway/api/config/v1"
+	"go-micro/gateway/midware"
+
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"

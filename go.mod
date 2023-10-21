@@ -1,4 +1,4 @@
-module github.com/carmel/go-micro
+module go-micro
 
 go 1.21
 
@@ -90,6 +90,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.19.0
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/multierr v1.11.0 // indirect
+	golang.org/x/crypto v0.14.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/yaml.v3 v3.0.1 // indirect

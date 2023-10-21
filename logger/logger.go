@@ -19,9 +19,9 @@ const (
 type Options struct {
 	// 日志存放路径
 	LogPath string `yaml:"log-path"`
-	// 日志保存期限
+	// 日志保存期限（天）
 	MaxAge time.Duration `yaml:"max-age"`
-	// 单个日志文件大小，超过则rotate
+	// 单个日志文件大小（MB），超过则rotate
 	MaxSize int64 `yaml:"max-size"`
 	// 日志是否压缩
 	// Compress bool `yaml:"compress"`

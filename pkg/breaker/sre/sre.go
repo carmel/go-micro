@@ -6,8 +6,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/carmel/go-micro/pkg/breaker"
-	"github.com/carmel/go-micro/pkg/window"
+	"go-micro/pkg/breaker"
+	"go-micro/pkg/window"
+
 	"golang.org/x/exp/rand"
 )
 

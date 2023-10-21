@@ -4,8 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	configv1 "github.com/carmel/go-micro/gateway/api/config/v1"
-	"github.com/carmel/go-micro/logger"
+	configv1 "go-micro/gateway/api/config/v1"
+	"go-micro/logger"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
 

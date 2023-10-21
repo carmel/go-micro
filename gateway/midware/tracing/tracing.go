@@ -8,10 +8,11 @@ import (
 	"sync"
 	"time"
 
-	ms "github.com/carmel/go-micro"
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
-	v1 "github.com/carmel/go-micro/gateway/api/midware/tracing/v1"
-	"github.com/carmel/go-micro/gateway/midware"
+	ms "go-micro"
+	config "go-micro/gateway/api/config/v1"
+	v1 "go-micro/gateway/api/midware/tracing/v1"
+	"go-micro/gateway/midware"
+
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"

@@ -11,16 +11,16 @@ import (
 	grpcinsecure "google.golang.org/grpc/credentials/insecure"
 	grpcmd "google.golang.org/grpc/metadata"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/registry"
-	"github.com/carmel/go-micro/selector"
-	"github.com/carmel/go-micro/selector/wrr"
-	"github.com/carmel/go-micro/transport"
-	"github.com/carmel/go-micro/transport/grpc/resolver/discovery"
+	"go-micro/logger"
+	"go-micro/midware"
+	"go-micro/registry"
+	"go-micro/selector"
+	"go-micro/selector/wrr"
+	"go-micro/transport"
+	"go-micro/transport/grpc/resolver/discovery"
 
 	// init resolver
-	_ "github.com/carmel/go-micro/transport/grpc/resolver/direct"
+	_ "go-micro/transport/grpc/resolver/direct"
 )
 
 func init() {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/carmel/go-micro/registry"
+	"go-micro/registry"
 )
 
 var globalRegistry = NewRegistry()

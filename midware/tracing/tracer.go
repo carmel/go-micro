@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/carmel/go-micro/errors"
+	"go-micro/errors"
 )
 
 // Tracer is otel span tracer

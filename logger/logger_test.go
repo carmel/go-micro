@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/carmel/go-micro/util"
+	"go-micro/util"
 )
 
 type midware struct {
@@ -23,12 +23,13 @@ func TestLog(t *testing.T) {
 
 func BenchmarkZap(b *testing.B) {
 
-	logger, err := NewZapSugaredLogger(
+	// logger, err := NewZapSugaredLogger(
+	logger, err := NewSlogger(
 		Options{
 			// MaxBackups: 1,
-			MaxSize: 10 * 1024 * 1024,
-			// MaxSize:  10,
-			LogLevel: DEBUG,
+			MaxSize:  2,
+			MaxAge:   2,
+			LogLevel: ERROR,
 			LogPath:  "log/ms.log",
 		},
 	)
@@ -44,7 +45,7 @@ func BenchmarkZap(b *testing.B) {
 
 	b.StartTimer()
 
-	for i := 0; i < 120; i++ {
+	for i := 0; i < 100000; i++ {
 		wp.Acquire()
 
 		go func(i int) {
@@ -63,11 +64,11 @@ func BenchmarkZap(b *testing.B) {
 
 func TestSlog(t *testing.T) {
 
-	logger := NewSlogger(
+	logger, _ := NewSlogger(
 		Options{
 			// MaxBackups: 1,
-			MaxSize: 10 * 1024 * 1024,
-			// MaxSize:  10,
+			MaxSize:  2,
+			MaxAge:   2,
 			LogLevel: DEBUG,
 			LogPath:  "log/ms.log",
 		})

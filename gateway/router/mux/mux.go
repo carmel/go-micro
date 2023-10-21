@@ -10,8 +10,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/carmel/go-micro/gateway/router"
-	"github.com/carmel/go-micro/logger"
+	"go-micro/gateway/router"
+	"go-micro/logger"
+
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )

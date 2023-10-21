@@ -8,7 +8,7 @@ import (
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 
-	"github.com/carmel/go-micro/registry"
+	"go-micro/registry"
 )
 
 var (

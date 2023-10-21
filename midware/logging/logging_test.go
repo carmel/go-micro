@@ -6,9 +6,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/logger"
+	"go-micro/midware"
+	"go-micro/transport"
 )
 
 var _ transport.Transporter = (*Transport)(nil)
@@ -42,7 +42,7 @@ func (tr *Transport) ReplyHeader() transport.Header {
 func TestHTTP(t *testing.T) {
 	err := errors.New("reply.error")
 	bf := bytes.NewBuffer(nil)
-	log := logger.NewSlogger(logger.Options{})
+	log, _ := logger.NewSlogger(logger.Options{})
 
 	tests := []struct {
 		name string

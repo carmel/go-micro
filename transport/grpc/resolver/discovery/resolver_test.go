@@ -9,7 +9,7 @@ import (
 
 	"google.golang.org/grpc/resolver"
 
-	"github.com/carmel/go-micro/registry"
+	"go-micro/registry"
 )
 
 type testClientConn struct {

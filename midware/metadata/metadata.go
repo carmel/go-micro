@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"github.com/carmel/go-micro/metadata"
-	"github.com/carmel/go-micro/midware"
-	"github.com/carmel/go-micro/transport"
+	"go-micro/metadata"
+	"go-micro/midware"
+	"go-micro/transport"
 )
 
 // Option is metadata option.

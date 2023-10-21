@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"log"
 
-	ms "github.com/carmel/go-micro"
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/metadata"
-	mmd "github.com/carmel/go-micro/midware/metadata"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	ms "go-micro"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/metadata"
+	mmd "go-micro/midware/metadata"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"

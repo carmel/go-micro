@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"log"
 
-	ms "github.com/carmel/go-micro"
-	pb "github.com/carmel/go-micro/example/testdata/helloworld"
-	"github.com/carmel/go-micro/midware/recovery"
-	"github.com/carmel/go-micro/registry/etcd"
-	"github.com/carmel/go-micro/transport/grpc"
-	"github.com/carmel/go-micro/transport/http"
+	ms "go-micro"
+	pb "go-micro/example/testdata/helloworld"
+	"go-micro/midware/recovery"
+	"go-micro/registry/etcd"
+	"go-micro/transport/grpc"
+	"go-micro/transport/http"
+
 	etcdclient "go.etcd.io/etcd/client/v3"
 )
 

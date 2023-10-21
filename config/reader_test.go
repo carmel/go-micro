@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	encoding "github.com/carmel/go-micro/codec"
+	encoding "go-micro/codec"
 )
 
 func TestReader_Merge(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/carmel/go-micro/gateway/midware"
-	"github.com/carmel/go-micro/selector"
+	"go-micro/gateway/midware"
+	"go-micro/selector"
 )
 
 type client struct {

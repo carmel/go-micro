@@ -5,10 +5,11 @@ import (
 	"path"
 	"strings"
 
-	config "github.com/carmel/go-micro/gateway/api/config/v1"
-	v1 "github.com/carmel/go-micro/gateway/api/midware/rewrite/v1"
+	config "go-micro/gateway/api/config/v1"
+	v1 "go-micro/gateway/api/midware/rewrite/v1"
 
-	"github.com/carmel/go-micro/gateway/midware"
+	"go-micro/gateway/midware"
+
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 )

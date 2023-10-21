@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/carmel/go-micro/transport"
+	"go-micro/transport"
 )
 
 func TestTransport_Kind(t *testing.T) {

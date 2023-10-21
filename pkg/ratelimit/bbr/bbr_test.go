@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/carmel/go-micro/pkg/ratelimit"
-	"github.com/carmel/go-micro/pkg/window"
+	"go-micro/pkg/ratelimit"
+	"go-micro/pkg/window"
+
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/rand"
 )

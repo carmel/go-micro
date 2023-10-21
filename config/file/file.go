@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/carmel/go-micro/config"
+	"go-micro/config"
 )
 
 var _ config.Source = (*file)(nil)

@@ -3,11 +3,11 @@ package ratelimit
 import (
 	"context"
 
-	"github.com/carmel/go-micro/pkg/ratelimit"
-	"github.com/carmel/go-micro/pkg/ratelimit/bbr"
+	"go-micro/pkg/ratelimit"
+	"go-micro/pkg/ratelimit/bbr"
 
-	"github.com/carmel/go-micro/errors"
-	"github.com/carmel/go-micro/midware"
+	"go-micro/errors"
+	"go-micro/midware"
 )
 
 // ErrLimitExceed is service unavailable due to rate limit exceeded.

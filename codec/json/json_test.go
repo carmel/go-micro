@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	testData "github.com/carmel/go-micro/example/testdata/codec"
+	testData "go-micro/example/testdata/codec"
 )
 
 type testEmbed struct {

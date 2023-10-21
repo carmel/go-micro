@@ -5,7 +5,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 
-	"github.com/carmel/go-micro/example/testdata/binding"
+	"go-micro/example/testdata/binding"
 )
 
 func TestEncodeURL(t *testing.T) {

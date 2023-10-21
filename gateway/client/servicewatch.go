@@ -11,9 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/carmel/go-micro/gateway/proxy/debug"
-	"github.com/carmel/go-micro/logger"
-	"github.com/carmel/go-micro/registry"
+	"go-micro/gateway/proxy/debug"
+	"go-micro/logger"
+	"go-micro/registry"
+
 	"github.com/google/uuid"
 )
 
