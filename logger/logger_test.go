@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"sync"
 	"testing"
 
@@ -19,6 +20,8 @@ func TestLog(t *testing.T) {
 	Errorf("Errorf log message")
 	With("att1", "22").Error("sffs")
 	WithLog("att1", "22")(DEBUG, "sdfd")
+
+	fmt.Printf("%d", 3/2)
 }
 
 func BenchmarkZap(b *testing.B) {

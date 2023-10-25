@@ -12,10 +12,11 @@
 5. errors: 统一错误定义
 6. example: 测试案例
 7. gateway: API网关
-8. logger: 统一日志定义及实现
-9. metadata: 元信息/数据定义
-10. metrics: 接口监控定义
-11. midware: 中间件
+8. internal: 内部引用
+9. logger: 统一日志定义及实现
+10. metadata: 元信息/数据定义
+11. metrics: 接口监控定义
+12. midware: 中间件
     1. auth: 权限认证
     2. breaker: 熔断器（原circuitbreaker）
     3. logging: 日志
@@ -26,14 +27,14 @@
     8. navigator: 路由导航（原selector）
     9. tracing: 链路追踪
     10. validate: 参数校验
-12. pkg: 底层库包
-13. registry: 服务注册与发现
-14. selector: 路由与负载均衡
-15. tool: 基础工具
-16. transport: 网络传输协议
-
+13. pkg: 底层库包
+14. registry: 服务注册与发现
+15. selector: 路由与负载均衡
+16. tool: 基础工具
+17. transport: 网络传输协议
 
 ### 代码评审
+
 ```sh
 # struct优化
 go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
@@ -48,6 +49,7 @@ govulncheck ./...
 ```
 
 ### 安装protoc插件
+
 ```sh
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 go install github.com/carmel/go-micro/cmd/protoc-gen-go-http@latest
@@ -55,4 +57,5 @@ go install github.com/carmel/go-micro/cmd/protoc-gen-go-errors@latest
 ```
 
 ### 部署架构
+
 ![architecture](go-micro.png)

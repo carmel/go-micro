@@ -4,8 +4,8 @@ package errors;
 
 option go_package = "github.com/carmel/go-micro/errors;errors";
 option java_multiple_files = true;
-option java_package = "com.github.kratos.errors";
-option objc_class_prefix = "KratosErrors";
+option java_package = "com.github.carmel.errors";
+option objc_class_prefix = "GoMicroErrors";
 
 import "google/protobuf/descriptor.proto";
 

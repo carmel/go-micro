@@ -18,7 +18,7 @@ import (
 )
 
 type LogWriter struct {
-	ts   time.Time
+	utc  time.Time
 	file *os.File
 	dir  string
 	opts Options
@@ -42,12 +42,16 @@ func NewLogWriter(opts Options) (*LogWriter, error) {
 		return nil, fmt.Errorf("failed to open file %s: %s", opts.LogPath, err)
 	}
 
+	// MaxAge(days), MaxSize(MB)单位转换
+	opts.MaxAge = opts.MaxAge * time.Hour * 24
+	opts.MaxSize = opts.MaxSize * 1024 * 1024
+
 	w := &LogWriter{
 		opts: opts,
 		file: f,
 		// bw:   bufio.NewWriter(f),
 		dir: dir,
-		ts:  time.Now(),
+		utc: time.Now().UTC(),
 	}
 
 	// w.bw.WriteString("\n")
@@ -70,13 +74,12 @@ func (l *LogWriter) Write(p []byte) (n int, err error) {
 
 	writeLen := int64(len(p))
 	if l.opts.MaxSize != 0 {
-		maxSize := l.opts.MaxSize * 1024 * 1024
-		if maxSize < writeLen {
-			err = fmt.Errorf("write length %d exceeds maximum file size %d", writeLen, l.opts.MaxSize)
+		if l.opts.MaxSize < writeLen {
+			err = fmt.Errorf("write length %d exceeds maximum file size %d MB", writeLen/1024/1024, l.opts.MaxSize)
 			return
 		}
 
-		if l.size+writeLen > maxSize {
+		if l.size+writeLen > l.opts.MaxSize {
 			// 压缩存档
 			err = l.archive()
 			if err != nil {
@@ -86,7 +89,7 @@ func (l *LogWriter) Write(p []byte) (n int, err error) {
 		}
 	}
 
-	if l.opts.MaxAge != 0 && time.Now().After(l.ts.Add(l.opts.MaxAge*time.Hour*24)) {
+	if l.opts.MaxAge != 0 && time.Now().UTC().After(l.utc.Add(l.opts.MaxAge)) {
 		// 压缩存档
 		err = l.archive()
 		if err != nil {
@@ -176,7 +179,7 @@ func (l *LogWriter) archive() error {
 	// 	return fmt.Errorf("failed to seek log file: %s", err)
 	// }
 	l.size = 0
-	l.ts = time.Now().UTC()
+	l.utc = time.Now().UTC()
 
 	return nil
 }
