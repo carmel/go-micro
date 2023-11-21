@@ -1,184 +1,612 @@
-package config
+//
+//
+// Tencent is pleased to support the open source community by making tRPC available.
+//
+// Copyright (C) 2023 THL A29 Limited, a Tencent company.
+// All rights reserved.
+//
+// If you have downloaded a copy of the tRPC source code from Tencent,
+// please note that tRPC source code is licensed under the  Apache 2.0 License,
+// A copy of the Apache 2.0 License is included in this file.
+//
+//
+
+package config_test
 
 import (
-	"errors"
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"go-micro/client"
+	"go-micro/config"
+
+	trpc "go-micro"
 )
 
-const (
-	_testJSON = `
-{
-    "server":{
-        "http":{
-            "addr":"0.0.0.0",
-			"port":80,
-            "timeout":0.5,
-			"enable_ssl":true
-        },
-        "grpc":{
-            "addr":"0.0.0.0",
-			"port":10080,
-            "timeout":0.2
-        }
-    },
-    "data":{
-        "database":{
-            "driver":"mysql",
-            "source":"root:root@tcp(127.0.0.1:3306)/karta_id?parseTime=true"
-        }
-    },
-	"endpoints":[
-		"www.aaa.com",
-		"www.bbb.org"
-	]
-}`
-)
-
-type testConfigStruct struct {
-	Server struct {
-		HTTP struct {
-			Addr      string  `json:"addr"`
-			Port      int     `json:"port"`
-			Timeout   float64 `json:"timeout"`
-			EnableSSL bool    `json:"enable_ssl"`
-		} `json:"http"`
-		GRPC struct {
-			Addr    string  `json:"addr"`
-			Port    int     `json:"port"`
-			Timeout float64 `json:"timeout"`
-		} `json:"grpc"`
-	} `json:"server"`
-	Data struct {
-		Database struct {
-			Driver string `json:"driver"`
-			Source string `json:"source"`
-		} `json:"database"`
-	} `json:"data"`
-	Endpoints []string `json:"endpoints"`
+type mockResponse struct {
+	val string
 }
 
-type testJSONSource struct {
-	data string
-	sig  chan struct{}
-	err  chan struct{}
+func (r *mockResponse) Value() string {
+	return r.val
 }
 
-func newTestJSONSource(data string) *testJSONSource {
-	return &testJSONSource{data: data, sig: make(chan struct{}), err: make(chan struct{})}
-}
-
-func (p *testJSONSource) Load() ([]*KV, error) {
-	kv := &KV{
-		Key:    "json",
-		Value:  []byte(p.data),
-		Format: "json",
-	}
-	return []*KV{kv}, nil
-}
-
-func (p *testJSONSource) Watch() (Watcher, error) {
-	return newTestWatcher(p.sig, p.err), nil
-}
-
-type testWatcher struct {
-	sig  chan struct{}
-	err  chan struct{}
-	exit chan struct{}
-}
-
-func newTestWatcher(sig, err chan struct{}) Watcher {
-	return &testWatcher{sig: sig, err: err, exit: make(chan struct{})}
-}
-
-func (w *testWatcher) Next() ([]*KV, error) {
-	select {
-	case <-w.sig:
-		return nil, nil
-	case <-w.err:
-		return nil, errors.New("error")
-	case <-w.exit:
-		return nil, nil
-	}
-}
-
-func (w *testWatcher) Stop() error {
-	close(w.exit)
+func (r *mockResponse) MetaData() map[string]string {
 	return nil
 }
 
-func TestConfig(t *testing.T) {
-	var (
-		err            error
-		httpAddr       = "0.0.0.0"
-		httpTimeout    = 0.5
-		grpcPort       = 10080
-		endpoint1      = "www.aaa.com"
-		databaseDriver = "mysql"
-	)
+func (r *mockResponse) Event() config.EventType {
+	return config.EventTypeNull
+}
 
-	c := New(
-		WithSource(newTestJSONSource(_testJSON)),
-		WithDecoder(defaultDecoder),
-		WithResolver(defaultResolver),
-	)
-	err = c.Close()
-	if err != nil {
-		t.Fatal(err)
-	}
+type mockKV struct {
+	mu sync.RWMutex
+	db map[string]string
+}
 
-	jSource := newTestJSONSource(_testJSON)
-	opts := options{
-		sources:  []Source{jSource},
-		decoder:  defaultDecoder,
-		resolver: defaultResolver,
-	}
-	cf := &config{}
-	cf.opts = opts
-	cf.reader = newReader(opts)
+// Put mocks putting key and value into kv storage.
+func (kv *mockKV) Put(ctx context.Context, key, val string, opts ...config.Option) error {
+	kv.mu.Lock()
+	kv.db[key] = val
+	kv.mu.Unlock()
+	return nil
+}
 
-	err = cf.Load()
-	if err != nil {
-		t.Fatal(err)
+// Get mocks getting value from kv storage by key.
+func (kv *mockKV) Get(ctx context.Context, key string, opts ...config.Option) (config.Response, error) {
+	kv.mu.RLock()
+	defer kv.mu.RUnlock()
+	if val, ok := kv.db[key]; ok {
+		v := &mockResponse{val: val}
+		return v, nil
 	}
 
-	driver, err := cf.Value("data.database.driver").String()
-	if err != nil {
-		t.Fatal(err)
+	return nil, fmt.Errorf("invalid key")
+}
+
+// Watch makes mockKV satisfy the KV interface, this method
+// is empty.
+func (kv *mockKV) Watch(ctx context.Context, key string, opts ...config.Option) (<-chan config.Response, error) {
+	return nil, nil
+}
+
+func (kv *mockKV) Name() string {
+	return "mock"
+}
+
+// Del makes mockKV satisfy the KV interface, this method
+// is empty.
+func (kv *mockKV) Del(ctx context.Context, key string, opts ...config.Option) error {
+	return nil
+}
+
+type mockValue struct {
+	Age  int
+	Name string
+}
+
+func TestGlobalKV(t *testing.T) {
+	kv := config.GlobalKV()
+
+	mock := "foo"
+
+	err := kv.Put(context.Background(), "mockString", mock)
+	assert.Nil(t, err)
+
+	val, err := kv.Get(context.Background(), "mockString")
+	assert.NotNil(t, err)
+	assert.Nil(t, val)
+
+	err = kv.Del(context.Background(), "mockString")
+	assert.Nil(t, err)
+
+	config.SetGlobalKV(&mockKV{})
+	assert.NotNil(t, config.GlobalKV())
+}
+
+func TestGetConfigInfo(t *testing.T) {
+	c := &mockKV{
+		db: make(map[string]string),
 	}
-	if databaseDriver != driver {
-		t.Fatal("databaseDriver is not equal to val")
+	config.SetGlobalKV(c)
+	config.Register(c)
+
+	{
+		tmp := `
+age: 20
+name: 'foo'
+`
+		err := c.Put(context.Background(), "mockYAMLKey", tmp)
+		assert.Nil(t, err)
+
+		v := &mockValue{}
+		err = config.GetYAML("mockYAMLKey", v)
+		assert.Nil(t, err)
+		assert.Equal(t, 20, v.Age)
+		assert.Equal(t, "foo", v.Name)
+		err = config.GetYAMLWithProvider("mockYAMLKey", v, "mock")
+		assert.Nil(t, err)
+		assert.Equal(t, 20, v.Age)
+		assert.Equal(t, "foo", v.Name)
+		err = config.GetYAMLWithProvider("mockYAMLKey", v, "mockNotExist")
+		assert.NotNil(t, err)
 	}
 
-	err = cf.Watch("endpoints", func(key string, value Value) {
-	})
-	if err != nil {
-		t.Fatal(err)
+	// Test GetJson
+	{
+		tmp := &mockValue{
+			Age:  20,
+			Name: "foo",
+		}
+		tmpStr, err := json.Marshal(tmp)
+		assert.Nil(t, err)
+		err = c.Put(context.Background(), "mockJsonKey", string(tmpStr))
+		assert.Nil(t, err)
+
+		v := &mockValue{}
+		err = config.GetJSON("mockJsonKey", v)
+		assert.Nil(t, err)
+		assert.Equal(t, 20, v.Age)
+		assert.Equal(t, "foo", v.Name)
+		err = config.GetJSONWithProvider("mockJsonKey", v, "mock")
+		assert.Nil(t, err)
+		assert.Equal(t, 20, v.Age)
+		assert.Equal(t, "foo", v.Name)
+		err = config.GetJSONWithProvider("mockJsonKey", v, "mockNotExist")
+		assert.NotNil(t, err)
+
+		codec := &config.JSONCodec{}
+		out := make(map[string]string)
+		codec.Unmarshal(tmpStr, &out)
 	}
 
-	jSource.sig <- struct{}{}
-	jSource.err <- struct{}{}
+	// Test GetWithUnmarshal
+	{
 
-	var testConf testConfigStruct
-	err = cf.Scan(&testConf)
-	if err != nil {
-		t.Fatal(err)
+		v := &mockValue{}
+		err := config.GetWithUnmarshal("mockJsonKey1", v, "json")
+		assert.NotNil(t, err)
 	}
-	if httpAddr != testConf.Server.HTTP.Addr {
-		t.Errorf("testConf.Server.HTTP.Addr want: %s, got: %s", httpAddr, testConf.Server.HTTP.Addr)
+
+	// Test GetToml
+	{
+		tmp := `
+age = 20
+name = "foo"
+`
+		err := c.Put(context.Background(), "mockTomlKey", tmp)
+		assert.Nil(t, err)
+
+		v := &mockValue{}
+		err = config.GetTOML("mockTomlKey", v)
+		assert.Nil(t, err)
+		assert.Equal(t, 20, v.Age)
+		assert.Equal(t, "foo", v.Name)
+		err = config.GetTOMLWithProvider("mockTomlKey", v, "mock")
+		assert.Nil(t, err)
+		assert.Equal(t, 20, v.Age)
+		assert.Equal(t, "foo", v.Name)
+		err = config.GetTOMLWithProvider("mockTomlKey", v, "mockNotExist")
+		assert.NotNil(t, err)
 	}
-	if httpTimeout != testConf.Server.HTTP.Timeout {
-		t.Errorf("testConf.Server.HTTP.Timeout want: %.1f, got: %.1f", httpTimeout, testConf.Server.HTTP.Timeout)
+
+	// Test GetString
+	{
+		mock := "foo"
+		c.Put(context.Background(), "mockString", mock)
+		val, err := config.GetString("mockString")
+		assert.Nil(t, err)
+		assert.Equal(t, mock, val)
+		_, err = config.GetString("mockString1")
+		assert.NotNil(t, err)
 	}
-	if !testConf.Server.HTTP.EnableSSL {
-		t.Error("testConf.Server.HTTP.EnableSSL is not equal to true")
+	{
+		mock := 1
+		c.Put(context.Background(), "mockInt", fmt.Sprint(mock))
+		val, err := config.GetInt("mockInt")
+		assert.Nil(t, err)
+		assert.Equal(t, mock, val)
+		_, err = config.GetInt("mockInt1")
+		assert.NotNil(t, err)
 	}
-	if grpcPort != testConf.Server.GRPC.Port {
-		t.Errorf("testConf.Server.GRPC.Port want: %d, got: %d", grpcPort, testConf.Server.GRPC.Port)
+
+	// Test Get
+	{
+		c := config.Get("mock")
+		assert.NotNil(t, c)
 	}
-	if endpoint1 != testConf.Endpoints[0] {
-		t.Errorf("testConf.Endpoints[0] want: %s, got: %s", endpoint1, testConf.Endpoints[0])
+}
+
+// TestGetConfigGetDefault tests getting default value when
+// key is absent.
+func TestGetConfigGetDefault(t *testing.T) {
+	c := &mockKV{
+		db: make(map[string]string),
 	}
-	if len(testConf.Endpoints) != 2 {
-		t.Error("len(testConf.Endpoints) is not equal to 2")
+	config.SetGlobalKV(c)
+	config.Register(c)
+
+	// Test GetStringWithDefault
+	{
+		// get key successfully.
+		mock := "foo"
+		c.Put(context.Background(), "mockString", mock)
+		val := config.GetStringWithDefault("mockString", "otherValue")
+		assert.Equal(t, mock, val)
+
+		// key is absent, get default value.
+		def := "myDefaultValue"
+		val = config.GetStringWithDefault("whatever", def)
+		assert.Equal(t, val, def)
 	}
+	// Test GetIntWithDefault
+	{
+		// get key successfully.
+		mockint := 555
+		c.Put(context.Background(), "mockInt", fmt.Sprint(mockint))
+		val := config.GetIntWithDefault("mockInt", 123)
+		assert.Equal(t, mockint, val)
+
+		// key is absent, get default value.
+		def := 888
+		val = config.GetIntWithDefault("whatever", def)
+		assert.Equal(t, val, def)
+
+		// key exists, but fail to transfers to target type,
+		// get default value.
+		mockstr := "foo"
+		c.Put(context.Background(), "whatever", mockstr)
+		val = config.GetIntWithDefault("whatever", def)
+		assert.Equal(t, val, def)
+	}
+}
+
+func TestLoadYaml(t *testing.T) {
+	require := require.New(t)
+	err := config.Reload("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.NotNil(err)
+
+	_, err = config.Load("../testdata/trpc_go.yaml.1", config.WithCodec("yaml"))
+	require.NotNil(err)
+
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+	// out := &T{}
+	out := c.GetString("server.app", "")
+	t.Logf("return %+v", out)
+	require.Equal(out, "test", "app name is wrong")
+
+	buf := c.Bytes()
+	require.NotNil(buf)
+	bytes.Contains(buf, []byte("test"))
+
+	err = config.Reload("../testdata/trpc_go.yaml")
+	require.Nil(err)
+
+	require.Implements((*config.Config)(nil), c)
+}
+
+func TestLoadToml(t *testing.T) {
+	require := require.New(t)
+	rightPath := "../testdata/custom.toml"
+	wrongPath := "../testdata/custom.toml.1"
+
+	err := config.Reload(rightPath, config.WithCodec("toml"))
+	require.NotNil(err)
+
+	_, err = config.Load(wrongPath, config.WithCodec("toml"))
+	require.NotNil(err, "path not exist")
+	t.Logf("load with not exist path, err:%v", err)
+
+	c, err := config.Load(rightPath, config.WithCodec("toml"))
+	require.Nil(err, "failed to load config")
+	// out := &T{}
+	out := c.GetString("server.app", "")
+	t.Logf("return %s", out)
+	require.Equal(out, "test", "app name is wrong")
+
+	buf := c.Bytes()
+	require.NotNil(buf)
+	bytes.Contains(buf, []byte("test"))
+
+	obj := struct {
+		Server struct {
+			App      string
+			P        int `toml:"port"`
+			Protocol []string
+		}
+	}{}
+
+	err = c.Unmarshal(&obj)
+	require.Nil(err, "unmarshal should succ")
+	t.Logf("unmarshal struct:%+v", obj)
+	require.Equal(obj.Server.P, 1000)
+	require.Equal(len(obj.Server.Protocol), 2)
+
+	err = config.Reload("../testdata/custom.toml", config.WithCodec("toml"))
+	require.Nil(err)
+
+	require.Implements((*config.Config)(nil), c)
+}
+
+func TestLoadUnmarshal(t *testing.T) {
+	require := require.New(t)
+	config, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	out := &trpc.Config{}
+	err = config.Unmarshal(out)
+
+	require.Nil(err, "failed to load config")
+	t.Logf("return %+v", *out)
+}
+
+func TestLoadUnmarshalClient(t *testing.T) {
+	require := require.New(t)
+	config, err := config.Load("../testdata/client.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	out := client.DefaultClientConfig()
+	err = config.Unmarshal(&out)
+	t.Logf("return %+v %s", out["Test.HelloServer"], err)
+	require.Nil(err, "failed to load client config")
+}
+
+func TestGetString(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	out := c.GetString("server.app", "cc")
+	t.Logf("return %+v", out)
+	require.Equal("test", out, "app name is wrong")
+
+	out = c.GetString("server.app1", "cc")
+	t.Logf("return %+v", out)
+	require.Equal("cc", out, "app name is wrong")
+
+	out = c.GetString("server.admin.port", "cc")
+	t.Logf("return %+v", out)
+	require.Equal("9528", out, "app name is wrong")
+
+	out = c.GetString("server.admin", "cc")
+	t.Logf("return %+v", out)
+	require.Equal("cc", out, "app name is wrong")
+}
+
+func TestGetBool(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	out := c.GetBool("server.admin_port123", false)
+	t.Logf("return %+v", out)
+	require.Equal(false, out)
+
+	out = c.GetBool("server.app", false)
+	t.Logf("return %+v", out)
+	require.Equal(false, out)
+}
+
+func TestGet(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	out := c.Get("server.admin_port123", 10001)
+	t.Logf("return %+v", out)
+	require.Equal(10001, out)
+}
+
+func TestGetUint(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	{
+		actual := uint(9528)
+		dft := uint(10001)
+
+		out := c.GetUint("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetUint("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetUint("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+	}
+
+	{
+		actual := uint32(9528)
+		dft := uint32(10001)
+
+		out := c.GetUint32("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetUint32("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetUint32("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+	}
+
+	{
+		actual := uint64(9528)
+		dft := uint64(10001)
+
+		out := c.GetUint64("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetUint64("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetUint64("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+	}
+
+}
+
+func TestGetInt(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	{
+		actual := 9528
+		dft := 10001
+
+		out := c.GetInt("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetInt("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetInt("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+	}
+
+	{
+		actual := int32(9528)
+		dft := int32(10001)
+
+		out := c.GetInt32("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetInt32("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetInt32("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+	}
+
+	{
+		actual := int64(9528)
+		dft := int64(10001)
+
+		out := c.GetInt64("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetInt64("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetInt64("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+	}
+
+}
+
+func TestGetFloat(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	{
+		actual := float64(9528)
+		dft := float64(1.0)
+
+		out := c.GetFloat64("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetFloat64("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetFloat64("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+	}
+
+	{
+		actual := float32(9528)
+		dft := float32(1.0)
+
+		out := c.GetFloat32("server.admin.port", dft)
+		t.Logf("return %+v", out)
+		require.Equal(actual, out)
+
+		out = c.GetFloat32("server.admin_port123", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+		out = c.GetFloat32("server.app", dft)
+		t.Logf("return %+v", out)
+		require.Equal(dft, out)
+
+	}
+}
+
+func TestIsSet(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"))
+	require.Nil(err, "failed to load config")
+
+	out := c.IsSet("server.admin.port")
+	require.Equal(true, out)
+	out = c.IsSet("server.admin_port1")
+	require.Equal(false, out)
+}
+
+func TestUnmarshal(t *testing.T) {
+	require := require.New(t)
+	c, err := config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml"), config.WithProvider("file"))
+	require.Nil(err, "failed to load config")
+	var b struct {
+		Server struct {
+			App string
+		}
+	}
+	err = c.Unmarshal(&b)
+	require.Nil(err)
+	require.Equal("test", b.Server.App, "failed to read item")
+}
+
+func TestLoad(t *testing.T) {
+	c, err := config.Load("../testdata/trpc_go.yaml2", config.WithCodec("yaml"), config.WithProvider("file"))
+	assert.NotNil(t, err)
+	assert.Nil(t, c)
+
+	c, err = config.Load("../testdata/trpc_go.yaml", config.WithCodec("yaml1"))
+	assert.NotNil(t, err)
+	assert.Nil(t, c)
+
+	c, err = config.Load("../testdata/trpc_go.yaml", config.WithProvider("etcd"))
+	assert.NotNil(t, err)
+	assert.Nil(t, c)
+}
+
+func TestProvider(t *testing.T) {
+	require := require.New(t)
+	p := &config.FileProvider{}
+	require.Equal("file", p.Name())
+	config.RegisterProvider(p)
+	pp := config.GetProvider("file")
+	require.Equal(p, pp)
 }

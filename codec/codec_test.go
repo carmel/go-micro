@@ -1,88 +1,67 @@
-package codec
+//
+//
+// Tencent is pleased to support the open source community by making tRPC available.
+//
+// Copyright (C) 2023 THL A29 Limited, a Tencent company.
+// All rights reserved.
+//
+// If you have downloaded a copy of the tRPC source code from Tencent,
+// please note that tRPC source code is licensed under the  Apache 2.0 License,
+// A copy of the Apache 2.0 License is included in this file.
+//
+//
+
+package codec_test
 
 import (
-	"encoding/xml"
-	"fmt"
-	"runtime/debug"
+	"context"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"go-micro/codec"
 )
 
-type codec struct{}
+// go test -v -coverprofile=cover.out
+// go tool cover -func=cover.out
 
-func (c codec) Marshal(_ interface{}) ([]byte, error) {
-	panic("implement me")
+// Fake is a fake codec for test
+type Fake struct {
 }
 
-func (c codec) Unmarshal(_ []byte, _ interface{}) error {
-	panic("implement me")
+func (c *Fake) Encode(message codec.Msg, inbody []byte) (outbuf []byte, err error) {
+	return nil, nil
 }
 
-func (c codec) Name() string {
-	return ""
+func (c *Fake) Decode(message codec.Msg, inbuf []byte) (outbody []byte, err error) {
+	return nil, nil
 }
 
-// codec2 is a Codec implementation with xml.
-type codec2 struct{}
+// TestCodec is unit test for the register logic of codec.
+func TestCodec(t *testing.T) {
+	f := &Fake{}
 
-func (codec2) Marshal(v interface{}) ([]byte, error) {
-	return xml.Marshal(v)
+	codec.Register("fake", f, f)
+
+	serverCodec := codec.GetServer("NoExists")
+	assert.Nil(t, serverCodec)
+
+	clientCodec := codec.GetClient("NoExists")
+	assert.Nil(t, clientCodec)
+
+	serverCodec = codec.GetServer("fake")
+	assert.Equal(t, f, serverCodec)
+
+	clientCodec = codec.GetClient("fake")
+	assert.Equal(t, f, clientCodec)
 }
 
-func (codec2) Unmarshal(data []byte, v interface{}) error {
-	return xml.Unmarshal(data, v)
-}
+// GOMAXPROCS=1 go test -bench=WithNewMessage -benchmem -benchtime=10s
+// -memprofile mem.out -cpuprofile cpu.out codec_test.go
 
-func (codec2) Name() string {
-	return "xml"
-}
-
-func TestRegisterCodec(t *testing.T) {
-	f := func() { RegisterCodec(nil) }
-	funcDidPanic, panicValue, _ := didPanic(f)
-	if !funcDidPanic {
-		t.Fatalf(fmt.Sprintf("func should panic\n\tPanic value:\t%#v", panicValue))
+// BenchmarkWithNewMessage is the benchmark test of codec
+func BenchmarkWithNewMessage(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		codec.WithNewMessage(context.Background())
 	}
-	if panicValue != "cannot register a nil Codec" {
-		t.Fatalf("panic error got %s want cannot register a nil Codec", panicValue)
-	}
-	f = func() {
-		RegisterCodec(codec{})
-	}
-	funcDidPanic, panicValue, _ = didPanic(f)
-	if !funcDidPanic {
-		t.Fatalf(fmt.Sprintf("func should panic\n\tPanic value:\t%#v", panicValue))
-	}
-	if panicValue != "cannot register Codec with empty string result for Name()" {
-		t.Fatalf("panic error got %s want cannot register Codec with empty string result for Name()", panicValue)
-	}
-	codec := codec2{}
-	RegisterCodec(codec)
-	got := GetCodec("xml")
-	if got != codec {
-		t.Fatalf("RegisterCodec(%v) want %v got %v", codec, codec, got)
-	}
-}
-
-// PanicTestFunc defines a func that should be passed to assert.Panics and assert.NotPanics
-// methods, and represents a simple func that takes no arguments, and returns nothing.
-type PanicTestFunc func()
-
-// didPanic returns true if the function passed to it panics. Otherwise, it returns false.
-func didPanic(f PanicTestFunc) (bool, interface{}, string) {
-	didPanic := false
-	var message interface{}
-	var stack string
-	func() {
-		defer func() {
-			if message = recover(); message != nil {
-				didPanic = true
-				stack = string(debug.Stack())
-			}
-		}()
-
-		// call the target function
-		f()
-	}()
-
-	return didPanic, message, stack
 }

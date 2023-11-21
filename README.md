@@ -1,61 +1,62 @@
-### 分布式微服务系统
+English | [中文](README.zh_CN.md)
 
-微服务架构要解决的问题：
+# tRPC-Go Framework
 
-1. cmd: 命令行工具
-   1. protoc-gen-go-http: protoc 插件
-   2. protoc-gen-go-errors: protoc 插件
-2. codec: 编码/解码/序列化（原encoding）
-3. config: 配置中心定义及实现  
-   通过实现`Source`接口来定义多个配置源，其中相同的配置项会因加载顺序的先后而被覆盖；另外，通过实现`Watcher`接口而实现配置修改的热更新。
-4. endpoint: 服务端点定义及实现
-5. errors: 统一错误定义
-6. example: 测试案例
-7. gateway: API网关
-8. internal: 内部引用
-9. logger: 统一日志定义及实现
-10. metadata: 元信息/数据定义
-11. metrics: 接口监控定义
-12. midware: 中间件
-    1. auth: 权限认证
-    2. breaker: 熔断器（原circuitbreaker）
-    3. logging: 日志
-    4. metadata: 元数据
-    5. metrics: 性能监测
-    6. ratelimit: 限流器
-    7. recovery: 异常恢复
-    8. navigator: 路由导航（原selector）
-    9. tracing: 链路追踪
-    10. validate: 参数校验
-13. pkg: 底层库包
-14. registry: 服务注册与发现
-15. selector: 路由与负载均衡
-16. tool: 基础工具
-17. transport: 网络传输协议
+[![Go Reference](https://pkg.go.dev/badge/github.com/trpc-group/trpc-go.svg)](https://pkg.go.dev/github.com/trpc-group/trpc-go)
+[![Go Report Card](https://goreportcard.com/badge/go-micro)](https://goreportcard.com/report/go-micro)
+[![LICENSE](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://github.com/trpc-group/trpc-go/blob/main/LICENSE)
+[![Releases](https://img.shields.io/github/release/trpc-group/trpc-go.svg?style=flat-square)](https://github.com/trpc-group/trpc-go/releases)
+[![Docs](https://img.shields.io/badge/docs-latest-green)](https://trpc.group/docs/languages/go/)
+[![Tests](https://github.com/trpc-group/trpc-go/actions/workflows/prc.yml/badge.svg)](https://github.com/trpc-group/trpc-go/actions/workflows/prc.yml)
+[![Coverage](https://codecov.io/gh/trpc-group/trpc-go/branch/main/graph/badge.svg)](https://app.codecov.io/gh/trpc-group/trpc-go/tree/main)
 
-### 代码评审
 
-```sh
-# struct优化
-go install golang.org/x/tools/go/analysis/passes/fieldalignment/cmd/fieldalignment@latest
-# 查看哪些结构体有待优化空间（--test=false: 忽略测试文件）
-fieldalignment --test=false ./...
-# --fix: 直接优化结构体（此时字段注释会被覆盖）
-fieldalignment --fix ./...
+tRPC-Go, is the [Go][] language implementation of [tRPC][], which is a pluggable, high-performance RPC framework.
 
-# 漏洞检测
-go install golang.org/x/vuln/cmd/govulncheck@latest
-govulncheck ./...
-```
+For more information, please refer to the [quick start guide][quick start] and [detailed documentation][docs].
 
-### 安装protoc插件
+## Overall Architecture
 
-```sh
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-go install github.com/carmel/go-micro/cmd/protoc-gen-go-http@latest
-go install github.com/carmel/go-micro/cmd/protoc-gen-go-errors@latest
-```
+![Architecture](.resources/overall.png)
 
-### 部署架构
+tRPC-Go has the following features:
 
-![architecture](go-micro.png)
+- Multiple services can be started within a single process, listening on multiple addresses.
+- All components are pluggable, with default implementations for various basic functionalities that can be replaced. Other components can be implemented by third parties and registered within the framework.
+- All interfaces can be mock tested using gomock&mockgen to generate mock code, facilitating testing.
+- The framework supports any third-party protocol by implementing the `codec` interfaces for the respective protocol. It defaults to supporting trpc and http protocols and can be switched at any time.
+- It provides the [trpc command-line tool][trpc-cmdline] for generating code templates.
+
+## Related Documentation
+
+- [quick start guide][quick start] and [detailed documentation][docs]
+- readme documents in each directory
+- [trpc command-line tool][trpc-cmdline]
+- [helloworld development guide][helloworld]
+- [example documentation for various features][features]
+
+## Ecosystem
+
+- [codec plugins][go-codec]
+- [filter plugins][go-filter]
+- [database plugins][go-database]
+- [more...][ecosystem]
+
+## How to Contribute
+
+If you're interested in contributing, please take a look at the [contribution guidelines][contributing] and check the [unassigned issues][issues] in the repository. Claim a task and let's contribute together to tRPC-Go.
+
+[Go]: https://golang.org
+[go-releases]: https://golang.org/doc/devel/release.html
+[tRPC]: https://github.com/trpc-group/trpc
+[trpc-cmdline]: https://github.com/trpc-group/trpc-cmdline
+[docs]: /docs/README.md
+[quick start]: /docs/quick_start.md
+[contributing]: CONTRIBUTING.md
+[issues]: https://github.com/trpc-group/trpc-go/issues
+[go-codec]: https://github.com/trpc-ecosystem/go-codec
+[go-filter]: https://github.com/trpc-ecosystem/go-filter
+[go-database]: https://github.com/trpc-ecosystem/go-database
+[ecosystem]: https://github.com/orgs/trpc-ecosystem/repositories
+[helloworld]: /examples/helloworld/
+[features]: /examples/features/
