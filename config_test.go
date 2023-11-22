@@ -34,16 +34,6 @@ func TestLoadGlobalConfigNICError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-// TestRepairServiceIPWithNicAdminError tests repairServiceIPWithNic for admin error.
-func TestRepairServiceIPWithNicAdminError(t *testing.T) {
-	conf := &Config{}
-	conf.Server.Admin.IP = ""
-	conf.Server.Admin.Nic = "ethNoneExist"
-	err := repairServiceIPWithNic(conf)
-	assert.Contains(t, err.Error(), "can't find admin IP by the NIC")
-
-}
-
 func TestParseEnv(t *testing.T) {
 	filePath := "./trpc_go.yaml"
 	content := `
@@ -807,52 +797,4 @@ func mustYamlUnmarshal(t *testing.T, in []byte, out interface{}) {
 	if err := yaml.Unmarshal(in, out); err != nil {
 		t.Fatal(err)
 	}
-}
-func TestRepairServiceIdleTime(t *testing.T) {
-	t.Run("set by service timeout", func(t *testing.T) {
-		var cfg Config
-		require.Nil(t, yaml.Unmarshal([]byte(`
-server: 
-  service:  
-    - name: trpc.test.helloworld.Greeter
-      ip: 127.0.0.1
-      port: 8000
-      network: tcp
-      protocol: trpc
-      timeout: 120000
-`), &cfg))
-		require.Nil(t, RepairConfig(&cfg))
-		require.Equal(t, 120000, cfg.Server.Service[0].Idletime)
-	})
-	t.Run("set by default", func(t *testing.T) {
-		var cfg Config
-		require.Nil(t, yaml.Unmarshal([]byte(`
-server: 
-  service:  
-    - name: trpc.test.helloworld.Greeter
-      ip: 127.0.0.1
-      port: 8000
-      network: tcp
-      protocol: trpc
-      timeout: 500
-`), &cfg))
-		require.Nil(t, RepairConfig(&cfg))
-		require.Equal(t, defaultIdleTimeout, cfg.Server.Service[0].Idletime)
-	})
-	t.Run("set by config", func(t *testing.T) {
-		var cfg Config
-		require.Nil(t, yaml.Unmarshal([]byte(`
-server: 
-  service:  
-    - name: trpc.test.helloworld.Greeter
-      ip: 127.0.0.1
-      port: 8000
-      network: tcp
-      protocol: trpc
-      timeout: 500
-      idletime: 1500
-`), &cfg))
-		require.Nil(t, RepairConfig(&cfg))
-		require.Equal(t, 1500, cfg.Server.Service[0].Idletime)
-	})
 }

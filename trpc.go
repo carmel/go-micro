@@ -66,10 +66,6 @@ func NewServer(opt ...server.Option) *server.Server {
 // If yaml config file not used, custom Config parsing is needed to pass the Config into this function.
 // Plugins' setup is left to do if this method is called.
 func NewServerWithConfig(cfg *Config, opt ...server.Option) *server.Server {
-	// repair config
-	if err := RepairConfig(cfg); err != nil {
-		panic("repair config fail: " + err.Error())
-	}
 
 	// set to global Config
 	SetGlobalConfig(cfg)

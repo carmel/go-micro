@@ -17,9 +17,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"net"
 	"os"
-	"strconv"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -29,7 +27,6 @@ import (
 	yaml "gopkg.in/yaml.v3"
 
 	"go-micro/client"
-	"go-micro/codec"
 	"go-micro/errs"
 	"go-micro/internal/rand"
 	"go-micro/plugin"
@@ -598,9 +595,7 @@ func LoadConfig(configPath string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := RepairConfig(cfg); err != nil {
-		return nil, err
-	}
+
 	return cfg, nil
 }
 
@@ -664,102 +659,6 @@ func SetupClients(cfg *ClientConfig) error {
 		}
 	}
 	return nil
-}
-
-// RepairConfig repairs the Config by filling in some fields with default values.
-func RepairConfig(cfg *Config) error {
-	// nic -> ip
-	if err := repairServiceIPWithNic(cfg); err != nil {
-		return err
-	}
-	// set default read buffer size
-	if cfg.Global.ReadBufferSize == nil {
-		readerSize := codec.DefaultReaderSize
-		cfg.Global.ReadBufferSize = &readerSize
-	}
-	codec.SetReaderSize(*cfg.Global.ReadBufferSize)
-
-	// protocol network ip empty
-	for _, serviceCfg := range cfg.Server.Service {
-		setDefault(&serviceCfg.Protocol, cfg.Server.Protocol)
-		setDefault(&serviceCfg.Network, cfg.Server.Network)
-		setDefault(&serviceCfg.IP, cfg.Global.LocalIP)
-		setDefault(&serviceCfg.Transport, cfg.Server.Transport)
-		setDefault(&serviceCfg.Address, net.JoinHostPort(serviceCfg.IP, strconv.Itoa(int(serviceCfg.Port))))
-
-		// server async mode by default
-		if serviceCfg.ServerAsync == nil {
-			enableServerAsync := true
-			serviceCfg.ServerAsync = &enableServerAsync
-		}
-		// writev disabled by default
-		if serviceCfg.Writev == nil {
-			enableWritev := false
-			serviceCfg.Writev = &enableWritev
-		}
-		if serviceCfg.Timeout == 0 {
-			serviceCfg.Timeout = cfg.Server.Timeout
-		}
-		if serviceCfg.Idletime == 0 {
-			serviceCfg.Idletime = defaultIdleTimeout
-			if serviceCfg.Timeout > defaultIdleTimeout {
-				serviceCfg.Idletime = serviceCfg.Timeout
-			}
-		}
-	}
-
-	setDefault(&cfg.Client.Namespace, cfg.Global.Namespace)
-	for _, backendCfg := range cfg.Client.Service {
-		repairClientConfig(backendCfg, &cfg.Client)
-	}
-	return nil
-}
-
-// repairServiceIPWithNic repairs the Config when service ip is empty according to the nic.
-func repairServiceIPWithNic(cfg *Config) error {
-	for index, item := range cfg.Server.Service {
-		if item.IP == "" {
-			ip := getIP(item.Nic)
-			if ip == "" && item.Nic != "" {
-				return fmt.Errorf("can't find service IP by the NIC: %s", item.Nic)
-			}
-			cfg.Server.Service[index].IP = ip
-		}
-		setDefault(&cfg.Global.LocalIP, item.IP)
-	}
-
-	if cfg.Server.Admin.IP == "" {
-		ip := getIP(cfg.Server.Admin.Nic)
-		if ip == "" && cfg.Server.Admin.Nic != "" {
-			return fmt.Errorf("can't find admin IP by the NIC: %s", cfg.Server.Admin.Nic)
-		}
-		cfg.Server.Admin.IP = ip
-	}
-	return nil
-}
-
-func repairClientConfig(backendCfg *client.BackendConfig, clientCfg *ClientConfig) {
-	// service name in proto file will be used as key for backend config by default
-	// generally, service name in proto file is the same as the backend service name.
-	// therefore, no need to config backend service name
-	setDefault(&backendCfg.Callee, backendCfg.ServiceName)
-	setDefault(&backendCfg.ServiceName, backendCfg.Callee)
-	setDefault(&backendCfg.Namespace, clientCfg.Namespace)
-	setDefault(&backendCfg.Network, clientCfg.Network)
-	setDefault(&backendCfg.Protocol, clientCfg.Protocol)
-	setDefault(&backendCfg.Transport, clientCfg.Transport)
-	if backendCfg.Target == "" {
-		setDefault(&backendCfg.Discovery, clientCfg.Discovery)
-		setDefault(&backendCfg.ServiceRouter, clientCfg.ServiceRouter)
-		setDefault(&backendCfg.Loadbalance, clientCfg.Loadbalance)
-		setDefault(&backendCfg.Circuitbreaker, clientCfg.Circuitbreaker)
-	}
-	if backendCfg.Timeout == 0 {
-		backendCfg.Timeout = clientCfg.Timeout
-	}
-	// Global filter is at front and is deduplicated.
-	backendCfg.Filter = deduplicate(clientCfg.Filter, backendCfg.Filter)
-	backendCfg.StreamFilter = deduplicate(clientCfg.StreamFilter, backendCfg.StreamFilter)
 }
 
 // getMillisecond returns time.Duration by the input value in milliseconds.
