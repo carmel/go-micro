@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -38,6 +39,9 @@ func NewSlogger(opt Options) (*Slogger, error) {
 			),
 		}, nil
 	} else {
+		if opt.LogPath == "" {
+			return nil, errors.New("please specify the log storage path")
+		}
 		logWriter, err := NewLogWriter(opt)
 		if err != nil {
 			return nil, fmt.Errorf("new LogWriter failed: %s", err)

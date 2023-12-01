@@ -8,7 +8,6 @@ import (
 	"io"
 	"net"
 
-	// "io/ioutil"
 	"log"
 	"math/rand"
 	"mime/multipart"
@@ -27,6 +26,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/nfnt/resize"
 	"github.com/vmihailenco/msgpack"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -709,4 +709,15 @@ func AnyToBytes(v interface{}) ([]byte, error) {
 func BytesToAny[T any](val []byte) (data T, err error) {
 	err = msgpack.Unmarshal(val, &data)
 	return
+}
+
+func Loadyaml(path string, conf interface{}) {
+	c, err := os.ReadFile(path)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	err = yaml.UnmarshalStrict(c, conf)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

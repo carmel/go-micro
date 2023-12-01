@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package internal;
 
-option go_package ="github.com/carmel/go-micro/internal;internal";
+option go_package ="github.com/carmel/go-micro/proto/pb;pb";
 
 import "google/protobuf/any.proto";
 

@@ -66,8 +66,8 @@ func TestYamlAndEtcd(t *testing.T) {
 		} `json:"service"`
 		Http struct {
 			Server struct {
-				Address string `json:"address"`
-				Timeout string `json:"timeout"`
+				Address string        `json:"address"`
+				Timeout time.Duration `json:"timeout"`
 			} `json:"server"`
 		} `json:"http"`
 	}
