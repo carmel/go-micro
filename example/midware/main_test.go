@@ -13,9 +13,9 @@ import (
 	prom "go-micro/metrics/prometheus"
 	"go-micro/midware/auth/jwt"
 	"go-micro/midware/breaker"
+	"go-micro/midware/filter"
 	"go-micro/midware/logging"
 	"go-micro/midware/metrics"
-	"go-micro/midware/navigator"
 	"go-micro/midware/ratelimit"
 	"go-micro/midware/recovery"
 	"go-micro/midware/validate"
@@ -70,7 +70,7 @@ func init() {
 }
 
 // NewWhiteListMatcher 创建jwt白名单
-func NewWhiteListMatcher() navigator.MatchFunc {
+func NewWhiteListMatcher() filter.MatchFunc {
 	whiteList := make(map[string]struct{})
 	whiteList["/admin.v1.AdminService/Login"] = struct{}{}
 	whiteList["/admin.v1.AdminService/Logout"] = struct{}{}
@@ -134,7 +134,7 @@ func TestServer(t *testing.T) {
 				metrics.WithRequests(prom.NewCounter(_metricRequests)),
 			),
 			// 白名单
-			navigator.Server(
+			filter.Server(
 				jwt.Server(
 					func(token *jwtv5.Token) (interface{}, error) {
 						return []byte(apiKey), nil

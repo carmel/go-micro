@@ -21,7 +21,7 @@
     3. logging: 日志
     4. metadata: 元数据
     5. metrics: 性能监测
-    6. navigator: 路由导航（原selector）
+    6. filter: 路由过滤器（原selector）
     7. ratelimit: 限流器
     8. recovery: 异常恢复
     9. tracing: 链路追踪

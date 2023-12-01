@@ -1,4 +1,4 @@
-package navigator
+package filter
 
 import (
 	"context"
