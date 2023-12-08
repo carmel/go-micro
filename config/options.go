@@ -14,6 +14,9 @@ type Decoder func(*KV, map[string]interface{}) error
 // Resolver resolve placeholder in config.
 type Resolver func(map[string]interface{}) error
 
+// Merge is config merge func.
+type Merge func(dst, src interface{}) error
+
 // Option is config option.
 type Option func(*options)
 
@@ -21,6 +24,7 @@ type options struct {
 	decoder  Decoder
 	resolver Resolver
 	sources  []Source
+	merge    Merge
 }
 
 // WithSource with config source.
@@ -45,6 +49,13 @@ func WithDecoder(d Decoder) Option {
 func WithResolver(r Resolver) Option {
 	return func(o *options) {
 		o.resolver = r
+	}
+}
+
+// WithMergeFunc with config merge func.
+func WithMergeFunc(m Merge) Option {
+	return func(o *options) {
+		o.merge = m
 	}
 }
 

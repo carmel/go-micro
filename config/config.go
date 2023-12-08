@@ -7,6 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"go-micro/pkg/mergo"
+
 	// init encoding
 	_ "go-micro/codec/json"
 	_ "go-micro/codec/proto"
@@ -49,6 +51,9 @@ func New(opts ...Option) Config {
 	o := options{
 		decoder:  defaultDecoder,
 		resolver: defaultResolver,
+		merge: func(dst, src interface{}) error {
+			return mergo.Map(dst, src, mergo.WithOverride)
+		},
 	}
 	for _, opt := range opts {
 		opt(&o)

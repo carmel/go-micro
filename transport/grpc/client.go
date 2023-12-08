@@ -7,8 +7,11 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/balancer"
+	"google.golang.org/grpc/balancer/base"
 	"google.golang.org/grpc/credentials"
 	grpcinsecure "google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/encoding"
 	grpcmd "google.golang.org/grpc/metadata"
 
 	"go-micro/logger"
@@ -24,9 +27,21 @@ import (
 )
 
 func init() {
+	encoding.RegisterCodec(codec{})
+
 	if selector.GlobalSelector() == nil {
 		selector.SetGlobalSelector(wrr.NewBuilder())
 	}
+
+	b := base.NewBalancerBuilder(
+		balancerName,
+		&balancerBuilder{
+			builder: selector.GlobalSelector(),
+		},
+		base.Config{HealthCheck: true},
+	)
+	balancer.Register(b)
+
 }
 
 // ClientOption is gRPC client option.

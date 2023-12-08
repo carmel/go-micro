@@ -3,16 +3,15 @@ package grpc
 import (
 	"fmt"
 
-	"google.golang.org/grpc/encoding"
 	"google.golang.org/protobuf/proto"
 
 	enc "go-micro/codec"
 	"go-micro/codec/json"
 )
 
-func init() {
-	encoding.RegisterCodec(codec{})
-}
+// func init() {
+// 	encoding.RegisterCodec(codec{})
+// }
 
 // codec is a Codec implementation with protobuf. It is the default codec for gRPC.
 type codec struct{}

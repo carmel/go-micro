@@ -19,16 +19,16 @@ var (
 	_ balancer.Picker    = (*balancerPicker)(nil)
 )
 
-func init() {
-	b := base.NewBalancerBuilder(
-		balancerName,
-		&balancerBuilder{
-			builder: selector.GlobalSelector(),
-		},
-		base.Config{HealthCheck: true},
-	)
-	balancer.Register(b)
-}
+// func init() {
+// 	b := base.NewBalancerBuilder(
+// 		balancerName,
+// 		&balancerBuilder{
+// 			builder: selector.GlobalSelector(),
+// 		},
+// 		base.Config{HealthCheck: true},
+// 	)
+// 	balancer.Register(b)
+// }
 
 type balancerBuilder struct {
 	builder selector.Builder

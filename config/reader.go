@@ -10,7 +10,6 @@ import (
 
 	"go-micro/logger"
 
-	"dario.cat/mergo"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -48,7 +47,9 @@ func (r *reader) Merge(kvs ...*KV) error {
 			logger.Errorf("Failed to config decode error: %v key: %s value: %s", err, kv.Key, string(kv.Value))
 			return err
 		}
-		if err := mergo.Map(&merged, convertMap(next), mergo.WithOverride); err != nil {
+		// if err := mergo.Map(&merged, convertMap(next), mergo.WithOverride); err != nil {
+		if err := r.opts.merge(&merged, convertMap(next)); err != nil {
+
 			logger.Errorf("Failed to config merge error: %v key: %s value: %s", err, kv.Key, string(kv.Value))
 			return err
 		}
