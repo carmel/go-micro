@@ -101,8 +101,8 @@ func FindIntIndex(slice []int64, val int64) int {
 	return -1
 }
 
-// RandomStr 获得随机字符串
-func RandomStr(l int) string {
+// GenRandom 获得随机字符串
+func GenRandom(l int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
 	bytes := []byte(str)
 	result := []byte{}

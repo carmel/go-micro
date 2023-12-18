@@ -100,7 +100,7 @@ func TestServer(t *testing.T) {
 				}),
 			),
 			// 日志
-			logging.Client(slog),
+			logging.Server(slog),
 			// 限流器
 			ratelimit.Server(),
 			// 流量监控
@@ -110,6 +110,14 @@ func TestServer(t *testing.T) {
 			),
 			// 参数校验
 			validate.Validator(),
+			// 权限控制
+			jwt.Server(
+				func(token *jwtv5.Token) (interface{}, error) {
+					return []byte(apiKey), nil
+				},
+				// 签名算法（SigningMethodHS256为默认算法）
+				jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
+			),
 		),
 	)
 
@@ -125,7 +133,7 @@ func TestServer(t *testing.T) {
 				}),
 			),
 			// 日志
-			logging.Client(slog),
+			logging.Server(slog),
 			// 限流器
 			ratelimit.Server(),
 			// 流量监控
@@ -133,7 +141,7 @@ func TestServer(t *testing.T) {
 				metrics.WithSeconds(prom.NewHistogram(_metricSeconds)),
 				metrics.WithRequests(prom.NewCounter(_metricRequests)),
 			),
-			// 白名单
+			// 权限白名单
 			filter.Server(
 				jwt.Server(
 					func(token *jwtv5.Token) (interface{}, error) {
