@@ -8,7 +8,7 @@ import (
 
 	"go-micro/errors"
 	"go-micro/midware"
-	"go-micro/pkg/group"
+	"go-micro/pkg/container"
 	"go-micro/transport"
 )
 
@@ -20,7 +20,7 @@ type Option func(*options)
 
 // WithGroup with circuit breaker group.
 // NOTE: implements generics breaker.CircuitBreaker
-func WithGroup(g *group.Group) Option {
+func WithGroup(g *container.Group) Option {
 	return func(o *options) {
 		o.group = g
 	}
@@ -29,21 +29,21 @@ func WithGroup(g *group.Group) Option {
 // WithCircuitBreaker with circuit breaker genFunc.
 func WithCircuitBreaker(genBreakerFunc func() breaker.CircuitBreaker) Option {
 	return func(o *options) {
-		o.group = group.NewGroup(func() interface{} {
+		o.group = container.NewGroup(func() interface{} {
 			return genBreakerFunc()
 		})
 	}
 }
 
 type options struct {
-	group *group.Group
+	group *container.Group
 }
 
 // Client breaker midware will return errBreakerTriggered when the circuit
 // breaker is triggered and the request is rejected directly.
 func Client(opts ...Option) midware.Midware {
 	opt := &options{
-		group: group.NewGroup(func() interface{} {
+		group: container.NewGroup(func() interface{} {
 			return sre.NewBreaker()
 		}),
 	}

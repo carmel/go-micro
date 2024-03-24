@@ -1,7 +1,7 @@
 // Package group provides a sample lazy load container.
 // The group only creating a new object not until the object is needed by user.
 // And it will cache all the objects to reduce the creation of object.
-package group
+package container
 
 import "sync"
 

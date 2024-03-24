@@ -64,15 +64,15 @@ func IntUUID() uint32 {
 
 }
 
-func InArray(val string, array []string) bool {
-	for i := 0; i < len(array); i++ {
-		// if strings.HasPrefix(val, array[i]) {
-		if val == array[i] {
-			return true
-		}
-	}
-	return false
-}
+// func InArray(val string, array []string) bool {
+// 	for i := 0; i < len(array); i++ {
+// 		// if strings.HasPrefix(val, array[i]) {
+// 		if val == array[i] {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
 func PrefixInArray(val string, array []string) bool {
 	for i := 0; i < len(array); i++ {
@@ -83,23 +83,23 @@ func PrefixInArray(val string, array []string) bool {
 	return false
 }
 
-func FindStrIndex(slice []string, val string) int {
-	for i, item := range slice {
-		if item == val {
-			return i
-		}
-	}
-	return -1
-}
+// func FindStrIndex(slice []string, val string) int {
+// 	for i, item := range slice {
+// 		if item == val {
+// 			return i
+// 		}
+// 	}
+// 	return -1
+// }
 
-func FindIntIndex(slice []int64, val int64) int {
-	for i, item := range slice {
-		if item == val {
-			return i
-		}
-	}
-	return -1
-}
+// func FindIntIndex(slice []int64, val int64) int {
+// 	for i, item := range slice {
+// 		if item == val {
+// 			return i
+// 		}
+// 	}
+// 	return -1
+// }
 
 // GenRandom 获得随机字符串
 func GenRandom(l int) string {
@@ -195,9 +195,10 @@ func OpenFile(name, sep string) *os.File {
 	return f
 }
 
+// 驼峰式
 func ToCamel(str string) (result string) {
 	rn := []rune(str)
-
+	result = str[0:1]
 	if rn[0] >= 97 && rn[0] <= 122 {
 		result = string(rn[0] - 32)
 	}
@@ -213,10 +214,10 @@ func ToCamel(str string) (result string) {
 	return
 }
 
-// 驼峰式变下划线式
+// 下划线式
 func ToSnake(str string) (result string) {
 	rn := []rune(str)
-
+	result = str[0:1]
 	if rn[0] >= 65 && rn[0] <= 90 {
 		result = string(rn[0] + 32)
 	}
@@ -233,31 +234,31 @@ func ToSnake(str string) (result string) {
 }
 
 // start>0时从串首开始截取n位，start<0时从串尾倒数|start|开始截取n位
-func Substr(s string, start int, n int) string {
-	rs := []rune(s)
-	sn := len(rs)
+// func Substr(s string, start int, n int) string {
+// 	rs := []rune(s)
+// 	sn := len(rs)
 
-	if n > sn || n < 0 {
-		return ""
-	}
+// 	if n > sn || n < 0 {
+// 		return ""
+// 	}
 
-	if start < 0 {
-		if sn+start < 0 {
-			return ""
-		}
-		start = sn + start
-	} else {
-		if start > n {
-			return ""
-		}
-	}
+// 	if start < 0 {
+// 		if sn+start < 0 {
+// 			return ""
+// 		}
+// 		start = sn + start
+// 	} else {
+// 		if start > n {
+// 			return ""
+// 		}
+// 	}
 
-	if n > sn-start {
-		n = sn - start
-	}
+// 	if n > sn-start {
+// 		n = sn - start
+// 	}
 
-	return string(rs[start : start+n])
-}
+// 	return string(rs[start : start+n])
+// }
 
 func ASCII(r rune) rune {
 	switch {
@@ -384,13 +385,17 @@ func GetDiffTS(diff int) (int64, int64) {
 	return min, t.Unix()
 }
 
+// p 为以逗号隔开的字符串
 func Contain(p, c string) bool {
-	return strings.Contains(","+p+",", ","+c+",")
+	fmts := func(s string) string {
+		return fmt.Sprintf(",%s,", s)
+	}
+	return strings.Contains(fmts(p), fmts(c))
 }
 
 // s1是否包含s2; 其中s1为逗号隔开的字符串，s2为可能出现在s1中，逗号分隔的某个子串;
 // any 是否只包含其中一个即可，还是必须包含所有
-func SubContain(s1 string, any bool, s2 ...string) bool {
+func SubContain(any bool, s1 string, s2 ...string) bool {
 	if any {
 		for _, e := range s2 {
 			if Contain(s1, e) {
@@ -685,15 +690,6 @@ func IsIPv6(str string) bool {
 	return ip != nil && strings.Contains(str, ":")
 }
 
-func Min(first int, args ...int) int {
-	for _, v := range args {
-		if first > v {
-			first = v
-		}
-	}
-	return first
-}
-
 func AnyToBytes(v interface{}) ([]byte, error) {
 	return msgpack.Marshal(v)
 }
@@ -720,4 +716,12 @@ func Loadyaml(path string, conf interface{}) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func ToAnyList[T any](input []T) []any {
+	list := make([]any, len(input))
+	for i, v := range input {
+		list[i] = v
+	}
+	return list
 }

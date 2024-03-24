@@ -1,4 +1,4 @@
-package subset
+package container
 
 import "go-micro/pkg/consistent"
 

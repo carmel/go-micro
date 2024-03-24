@@ -11,7 +11,7 @@ import (
 
 	"go-micro/endpoint"
 	"go-micro/logger"
-	"go-micro/pkg/subset"
+	"go-micro/pkg/container"
 	"go-micro/registry"
 )
 
@@ -67,7 +67,7 @@ func (r *discoveryResolver) update(ins []*registry.ServiceInstance) {
 		filtered = append(filtered, in)
 	}
 	if r.subsetSize != 0 {
-		filtered = subset.Subset(r.selecterKey, filtered, r.subsetSize)
+		filtered = container.Subset(r.selecterKey, filtered, r.subsetSize)
 	}
 
 	addrs := make([]resolver.Address, 0, len(filtered))

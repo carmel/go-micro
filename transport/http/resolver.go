@@ -11,7 +11,7 @@ import (
 
 	"go-micro/endpoint"
 	"go-micro/logger"
-	"go-micro/pkg/subset"
+	"go-micro/pkg/container"
 	"go-micro/registry"
 	"go-micro/selector"
 )
@@ -133,7 +133,7 @@ func (r *resolver) update(services []*registry.ServiceInstance) bool {
 		filtered = append(filtered, ins)
 	}
 	if r.subsetSize != 0 {
-		filtered = subset.Subset(r.selecterKey, filtered, r.subsetSize)
+		filtered = container.Subset(r.selecterKey, filtered, r.subsetSize)
 	}
 	nodes := make([]selector.Node, 0, len(filtered))
 	for _, ins := range filtered {

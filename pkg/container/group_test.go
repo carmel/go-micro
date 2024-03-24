@@ -1,4 +1,4 @@
-package group
+package container
 
 import (
 	"reflect"

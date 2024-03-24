@@ -1,4 +1,4 @@
-package minheap
+package container
 
 import (
 	"container/heap"

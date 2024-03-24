@@ -16,7 +16,8 @@ func gatherLatest(reg *prometheus.Registry) (result string, err error) {
 	}
 	buf := &bytes.Buffer{}
 
-	enc := expfmt.NewEncoder(buf, expfmt.FmtText)
+	// enc := expfmt.NewEncoder(buf, expfmt.FmtText)
+	enc := expfmt.NewEncoder(buf, expfmt.NewFormat(expfmt.TypeTextPlain))
 	for _, mf := range mfs {
 		if err = enc.Encode(mf); err != nil {
 			return "", err

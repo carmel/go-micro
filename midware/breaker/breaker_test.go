@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	mserrors "go-micro/errors"
-	"go-micro/pkg/group"
+	"go-micro/pkg/container"
 	"go-micro/transport"
 )
 
@@ -46,7 +46,7 @@ func (c *circuitBreakerMock) MarkFailed()  {}
 
 func Test_WithGroup(t *testing.T) {
 	o := options{
-		group: group.NewGroup(func() interface{} {
+		group: container.NewGroup(func() interface{} {
 			return ""
 		}),
 	}
@@ -68,7 +68,7 @@ func TestServer(_ *testing.T) {
 	ctx := transport.NewClientContext(context.Background(), &transportMock{})
 
 	_, _ = Client(func(o *options) {
-		o.group = group.NewGroup(func() interface{} {
+		o.group = container.NewGroup(func() interface{} {
 			return &circuitBreakerMock{err: errors.New("circuitbreaker error")}
 		})
 	})(nextValid)(ctx, nil)
