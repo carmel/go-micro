@@ -1,6 +1,7 @@
 package util
 
 import (
+	"archive/zip"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -21,6 +22,21 @@ func TestCompress(t *testing.T) {
 	fmt.Println(string(dat), err)
 
 	fmt.Println(os.FileMode(0644).String())
+}
+
+func TestFileZip(t *testing.T) {
+	fw, _ := os.Create("test.zip")
+	defer fw.Close()
+
+	FileZip(fw, zip.Deflate, struct {
+		Name string
+		Path string
+	}{
+		"file.go", "/home/carmel/Project/go-micro/util/file.go",
+	}, struct {
+		Name string
+		Path string
+	}{"common.go", "/home/carmel/Project/go-micro/util/common.go"})
 }
 
 func TestPool(t *testing.T) {

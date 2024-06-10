@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"image"
 	"image/jpeg"
-	"io"
 	"net"
 
 	"log"
 	"math/rand"
-	"mime/multipart"
 	"os"
 	"path"
 	"reflect"
@@ -127,30 +125,21 @@ func RemoveIndex(s []string, index int) []string {
 // }
 
 func checkExists(filename string) bool {
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-func GetExt(fileName string) string {
-	return strings.TrimLeft(path.Ext(fileName), ".")
-}
-func CheckImageExt(fileName string, exts []string) (bool, string) {
-	ext := GetExt(fileName)
-	for _, allow := range exts {
-		if strings.EqualFold(allow, ext) {
-			return true, ext
-		}
-	}
-	return false, ext
+	_, err := os.Stat(filename)
+	return !os.IsNotExist(err)
 }
 
-func GetSize(f multipart.File) (int, error) {
-	if content, err := io.ReadAll(f); err != nil {
-		return 0, err
-	} else {
-		return len(content), nil
+func GetFileExt(fileName string) string {
+	return strings.TrimLeft(path.Ext(fileName), ".")
+}
+
+func ExtValidator(ext string, exts []string) bool {
+	for _, allow := range exts {
+		if strings.EqualFold(allow, ext) {
+			return true
+		}
 	}
+	return false
 }
 
 // 创建目录（可以是多级目录，任何一级不存在则创建）
@@ -234,31 +223,31 @@ func ToSnake(str string) (result string) {
 }
 
 // start>0时从串首开始截取n位，start<0时从串尾倒数|start|开始截取n位
-// func Substr(s string, start int, n int) string {
-// 	rs := []rune(s)
-// 	sn := len(rs)
+func Substr(s string, start int, n int) string {
+	rs := []rune(s)
+	sn := len(rs)
 
-// 	if n > sn || n < 0 {
-// 		return ""
-// 	}
+	if n > sn || n < 0 {
+		return ""
+	}
 
-// 	if start < 0 {
-// 		if sn+start < 0 {
-// 			return ""
-// 		}
-// 		start = sn + start
-// 	} else {
-// 		if start > n {
-// 			return ""
-// 		}
-// 	}
+	if start < 0 {
+		if sn+start < 0 {
+			return ""
+		}
+		start = sn + start
+	} else {
+		if start > n {
+			return ""
+		}
+	}
 
-// 	if n > sn-start {
-// 		n = sn - start
-// 	}
+	if n > sn-start {
+		n = sn - start
+	}
 
-// 	return string(rs[start : start+n])
-// }
+	return string(rs[start : start+n])
+}
 
 func ASCII(r rune) rune {
 	switch {
@@ -665,29 +654,23 @@ func StructToTable(key, delimiter string, toCamel bool, structs ...interface{}) 
 	fmt.Println(sb.String())
 }
 
-func CompressJPEG(img image.Image, width uint, filePath string) error {
-	// defer file.Close()
-	// img, err := jpeg.Decode(file)
-	m := resize.Resize(width, 0, img, resize.Bilinear)
-
+func SaveImage(img image.Image, width uint, filePath string) error {
 	out, err := os.Create(filePath)
 	if err != nil {
 		return err
 	}
 	defer out.Close()
-	return jpeg.Encode(out, m, nil)
+	return jpeg.Encode(out, resize.Resize(width, 0, img, resize.Bilinear), nil)
 }
 
 // IsIPv4 check if the string is an IP version 4.
 func IsIPv4(str string) bool {
-	ip := net.ParseIP(str)
-	return ip != nil && strings.Contains(str, ".")
+	return strings.Contains(str, ".") && net.ParseIP(str) != nil
 }
 
 // IsIPv6 check if the string is an IP version 6.
 func IsIPv6(str string) bool {
-	ip := net.ParseIP(str)
-	return ip != nil && strings.Contains(str, ":")
+	return strings.Contains(str, ":") && net.ParseIP(str) != nil
 }
 
 func AnyToBytes(v interface{}) ([]byte, error) {

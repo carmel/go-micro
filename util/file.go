@@ -1,9 +1,11 @@
 package util
 
 import (
+	"archive/zip"
 	"compress/gzip"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 )
@@ -22,11 +24,8 @@ func FileGzip(f *os.File, gzName string) error {
 	defer nf.Close()
 
 	w := gzip.NewWriter(nf)
-	if err != nil {
-		return err
-	}
-	defer w.Close()
 
+	defer w.Close()
 	_, err = io.Copy(w, f)
 	return err
 	// 进行Sync读写时才需要使用Flush
@@ -86,4 +85,48 @@ func FileCopy(srcFile *os.File, dstPath string) error {
 
 	_, err = io.Copy(dst, srcFile)
 	return err
+}
+
+func FileZip(writer io.Writer, compressMethod uint16, src ...struct {
+	Name string
+	Path string
+}) error {
+	zw := zip.NewWriter(writer)
+	defer zw.Close()
+
+	var (
+		err    error
+		fl     *os.File
+		nw     io.Writer
+		info   fs.FileInfo
+		header *zip.FileHeader
+	)
+	for _, v := range src {
+		fl, err = os.Open(v.Path)
+		if err != nil {
+			return err
+		}
+		defer fl.Close()
+		info, err = fl.Stat()
+		if err != nil {
+			return err
+		}
+		header, err = zip.FileInfoHeader(info)
+		if err != nil {
+			return err
+		}
+		// 压缩算法
+		header.Method = compressMethod
+		// header.Name = filepath.Base(v)
+		header.Name = v.Name
+		nw, err = zw.CreateHeader(header)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(nw, fl)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
