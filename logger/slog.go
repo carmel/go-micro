@@ -68,7 +68,7 @@ func NewSlogger(opt Options) (*Slogger, error) {
 	}
 }
 
-func (s Slogger) With(kv ...interface{}) Logger {
+func (s Slogger) With(kv ...any) Logger {
 	s.Logger = s.Logger.With(kv...)
 	return s
 }
@@ -86,7 +86,7 @@ func (s Slogger) Log(l Level, msg string) {
 	}
 }
 
-func (s Slogger) Logf(l Level, format string, args ...interface{}) {
+func (s Slogger) Logf(l Level, format string, args ...any) {
 	s.Log(l, fmt.Sprintf(format, args...))
 }
 

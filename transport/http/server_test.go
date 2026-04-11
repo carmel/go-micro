@@ -153,7 +153,7 @@ func testHeader(t *testing.T, srv *Server) {
 	if err != nil {
 		t.Errorf("expected nil got %v", err)
 	}
-	reqURL := fmt.Sprintf(e.String() + "/index")
+	reqURL := fmt.Sprintf("%s", e.String()+"/index")
 	req, err := http.NewRequest(http.MethodGet, reqURL, nil)
 	if err != nil {
 		t.Errorf("expected nil got %v", err)
@@ -199,7 +199,7 @@ func testClient(t *testing.T, srv *Server) {
 	defer client.Close()
 	for _, test := range tests {
 		var res testData
-		reqURL := fmt.Sprintf(e.String() + test.path)
+		reqURL := fmt.Sprintf("%s", e.String()+test.path)
 		req, err := http.NewRequest(test.method, reqURL, nil)
 		if err != nil {
 			t.Fatal(err)

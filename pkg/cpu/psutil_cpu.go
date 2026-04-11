@@ -3,7 +3,7 @@ package cpu
 import (
 	"time"
 
-	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v4/cpu"
 )
 
 var _ CPU = (*psutilCPU)(nil)

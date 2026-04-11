@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"github.com/pkg/errors"
+	"resty.dev/v3"
 
 	"go-micro/logger"
 )

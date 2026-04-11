@@ -12,7 +12,6 @@ import (
 	"go-micro/config/file"
 
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"google.golang.org/grpc"
 )
 
 var flagconf string
@@ -27,7 +26,6 @@ func TestYamlAndEtcd(t *testing.T) {
 	client, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{"127.0.0.1:2379"},
 		DialTimeout: time.Second,
-		DialOptions: []grpc.DialOption{grpc.WithBlock()},
 	})
 	if err != nil {
 		t.Fatal(err)
